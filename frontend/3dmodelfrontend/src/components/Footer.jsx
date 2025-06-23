@@ -1,5 +1,7 @@
 import React from 'react';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
+import '../component design/Footer.css'; // or wherever you defined .bg-darkblue
+
 
 function Footer() {
   return (

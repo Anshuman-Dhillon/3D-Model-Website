@@ -1,0 +1,10 @@
+.bg-darkblue {
+    background-color: #001f3f;
+    /* dark navy blue */
+}
+footer {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    z-index: 1000;
+}

@@ -7,6 +7,7 @@ function App() {
   return (
     <>
       <NavBar />
+      <main>{/* Your page component */}</main>
       <Footer />
     </>
   );
