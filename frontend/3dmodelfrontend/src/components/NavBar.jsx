@@ -1,9 +1,11 @@
 import React from 'react';
+import "../component design/NavBar.css"
+import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 
 function NavBar() {
   return (
     <>
-      <nav className="navbar navbar-expand-lg navbar-dark bg-primary px-3" style={{ height: '75px', fontSize: '1.1rem' }}>
+      <nav className="navbar navbar-expand-lg navbar-dark bg-primary px-3">
         <a className="navbar-brand" href="#">Navbar</a>
         <button
           className="navbar-toggler"
@@ -20,16 +22,16 @@ function NavBar() {
         <div className="collapse navbar-collapse" id="navbarSupportedContent">
           <ul className="navbar-nav me-auto mb-2 mb-lg-0">
             <li className="nav-item active">
-              <a className="nav-link" href="#">
+              <a className="nav-link nav_text" href="#">
                 Home <span className="visually-hidden">(current)</span>
               </a>
             </li>
-            <li className="nav-item">
+            <li className="nav-item nav_text">
               <a className="nav-link" href="#">
-                Link
+                Marketplace
               </a>
             </li>
-            <li className="nav-item dropdown">
+            <li className="nav-item dropdown nav_text">
               <a
                 className="nav-link dropdown-toggle"
                 href="#"
@@ -38,12 +40,12 @@ function NavBar() {
                 data-bs-toggle="dropdown"
                 aria-expanded="false"
               >
-                Dropdown
+                My Profile
               </a>
               <ul className="dropdown-menu" aria-labelledby="navbarDropdown">
                 <li>
                   <a className="dropdown-item" href="#">
-                    Action
+                    Posts
                   </a>
                 </li>
                 <li>
@@ -56,14 +58,14 @@ function NavBar() {
                 </li>
                 <li>
                   <a className="dropdown-item" href="#">
-                    Something else here
+                    Settings
                   </a>
                 </li>
               </ul>
             </li>
             <li className="nav-item">
               <a className="nav-link disabled" href="#" tabIndex="-1" aria-disabled="true">
-                Disabled
+                Sign Up
               </a>
             </li>
           </ul>
@@ -74,7 +76,7 @@ function NavBar() {
               placeholder="Search"
               aria-label="Search"
             />
-            <button className="btn btn-outline-light" type="submit">
+            <button className="btn search_button" type="submit">
               Search
             </button>
           </form>

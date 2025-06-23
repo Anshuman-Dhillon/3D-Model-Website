@@ -1,0 +1,12 @@
+nav {
+    height: 75px;
+    font-size: 1.1rem;
+}
+
+.search_button {
+    background-color: rgb(76, 194, 18);
+}
+
+.nav_text {
+    color: aliceblue;
+}
