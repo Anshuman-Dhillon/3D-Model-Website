@@ -1,14 +1,15 @@
 import './pages design/App.css'
 import 'bootstrap/dist/css/bootstrap.min.css';
-import Template from './pages/Template';
+import NavBar from './components/NavBar';
+import Footer from './components/Footer';
 
 function App() {
-
   return (
     <>
-      <Template/>
+      <NavBar />
+      <Footer />
     </>
-  )
+  );
 }
 
 export default App
