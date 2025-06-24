@@ -15,11 +15,11 @@ const router = createBrowserRouter([
     path: '/',
     element: <App />, // App layout wraps all pages
     children: [
-      { index: true, element: <Home /> },
-      { path: 'home', element: <Home /> },
-      { path: 'catalog', element: <Catalog /> },
-      { path: 'login', element: <Login /> },
-      { path: 'profile', element: <ProfilePage /> },
+      { index: true, element: <Home /> }, // renders home page
+      { path: 'home', element: <Home /> }, //can use http://localhost:5173/home
+      { path: 'catalog', element: <Catalog /> }, //can use http://localhost:5173/catalog
+      { path: 'login', element: <Login /> }, //can use http://localhost:5173/login
+      { path: 'profile', element: <ProfilePage /> }, //can use http://localhost:5173/profile
       { path: 'signup', element: <SignUp /> },
     ],
   },
