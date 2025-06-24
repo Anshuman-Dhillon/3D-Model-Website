@@ -8,8 +8,8 @@ function NotFound() {
                 className="d-flex flex-column justify-content-center align-items-center flex-grow-1 text-center text-white"
                 style={{
                     background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                }}
-            >
+                }}>
+                
                 <div className="container">
                     <div className="row justify-content-center">
                         <div className="col-12 col-md-8 col-lg-6">
