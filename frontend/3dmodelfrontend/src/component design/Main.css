@@ -1,0 +1,7 @@
+main {
+    padding-bottom: 100px;
+    /* space to make room for footer */
+}
+#root {
+    background-color: #f8f9fa;
+}

@@ -1,0 +1,19 @@
+.login_container {
+    display: flex;
+    justify-content: center;
+    /* no vertical centering */
+    padding-top: 80px;
+    /* or adjust this to space below navbar */
+    height: 80vh;
+    align-items: center;
+    /* optional to allow scroll */
+}
+
+.login_div {
+    width: 550px;
+    /* better than 600 for forms */
+    padding: 40px;
+    background: linear-gradient(to right, rgb(44, 120, 196), #4481eb);
+    border-radius: 10px;
+    box-sizing: border-box;
+}

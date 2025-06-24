@@ -1,6 +1,7 @@
 nav {
     height: 80px;
     font-size: 1.2rem;
+    background: linear-gradient(to right, rgb(5, 156, 237), #70b7e7);
 }
 
 .search_button {
