@@ -1,19 +1,12 @@
-import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import React from 'react';
+import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import '../component design/NavBar.css'
 
 function SecondaryBar() {
     return (
-        <nav className="navbar navbar-expand-lg navbar-dark bg-primary px-3">
+        <nav className="navbar navbar-expand-lg navbar-dark bg-primary px-3 secondary_nav">
             <div className="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul className="navbar-nav me-auto mb-2 mb-lg-0">
-
-                    {/* Home */}
-                    <li className="nav-item">
-                        <a className="nav-link nav_text active" aria-current="page" href="#">
-                            Home
-                        </a>
-                    </li>
 
                     {/* Marketplace */}
                     <li className="nav-item">

@@ -1,12 +1,15 @@
 import React from 'react';
 import "../component design/NavBar.css";
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
+import { useNavigate } from "react-router-dom";
 
 function NavBar() {
+  const navigate = useNavigate();
+
   return (
     <>
       <nav className="navbar navbar-expand-lg navbar-dark bg-primary px-3">
-        <a className="navbar-brand title" href="#">Navbar</a>
+        <a className="navbar-brand title" href="#" onClick={() => navigate("/home")}>3DModeller</a>
         <button
           className="navbar-toggler"
           type="button"
@@ -22,12 +25,12 @@ function NavBar() {
         <div className="collapse navbar-collapse" id="navbarSupportedContent">
           <ul className="navbar-nav me-auto mb-2 mb-lg-0">
             <li className="nav-item active">
-              <a className="nav-link nav_text" href="#">
+              <a className="nav-link nav_text" href="#" onClick={() => navigate("/home")}>
                 Home <span className="visually-hidden">(current)</span>
               </a>
             </li>
             <li className="nav-item active">
-            <a className="nav-link nav_text" href="#">
+              <a className="nav-link nav_text" href="#" onClick={() => navigate("/catalog")}>
                 Marketplace <span className="visually-hidden">(current)</span>
               </a>
             </li>
@@ -51,25 +54,33 @@ function NavBar() {
                 <li><a className="dropdown-item" href="#">Account Settings</a></li>
               </ul>
             </li>
-
-            <li className="nav-item">
-              <a className="nav-link disabled" href="#" tabIndex="-1" aria-disabled="true">
-                Sign Up
-              </a>
-            </li>
           </ul>
 
-          <form className="d-flex" role="search">
-            <input
-              className="form-control me-2"
-              type="search"
-              placeholder="Search"
-              aria-label="Search"
-            />
-            <button className="btn search_button" type="submit">
-              Search
+          <div className="d-flex align-items-center">
+            {/* Login & Sign Up Buttons */}
+            <button className="btn btn-outline-light me-2" type="button" onClick={() => navigate("/login")}>
+              Login
             </button>
-          </form>
+            <button className="btn btn-light me-4" type="button" onClick={() => navigate("/signup")}>
+              Sign Up
+            </button>
+
+            {/* Search Form */}
+            <form className="d-flex" role="search">
+              <input
+                className="form-control me-2"
+                type="search"
+                placeholder="Search"
+                aria-label="Search"
+              />
+              <button className="btn search_button" type="submit">
+                Search
+              </button>
+            </form>
+          </div>
+
+
+
         </div>
       </nav>
     </>

@@ -7,14 +7,15 @@ import { Outlet } from 'react-router-dom';//used to render whatever is in router
 
 function App() {
   return (
-    <>
+    <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
       <NavBar />
-      <main>
-        <Outlet /> {/* This is where the routed page (Home, Catalog, etc.) will render */}
+      <main style={{ flex: 1 }}>
+        <Outlet />
       </main>
       <Footer />
-    </>
+    </div>
   );
 }
+
 
 export default App;

@@ -12,8 +12,8 @@ function SignUp() {
     };
 
      return (
-        <div className="login_container">
-            <div className="login_div d-flex flex-column align-items-center">
+        <div className="signup_container">
+            <div className="signup_div d-flex flex-column align-items-center">
                 <h1 className="mb-4">Sign Up</h1>
                 
                 <div className="mb-3" style={{ width: '100%', maxWidth: '300px' }}>

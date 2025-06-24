@@ -7,6 +7,8 @@ import Catalog from './pages/Catalog.jsx'
 import Login from './pages/Login.jsx'
 import ProfilePage from './pages/ProfilePage.jsx'
 import SignUp from './pages/SignUp.jsx'
+import NotFound from './pages/NotFound.jsx'
+import Cart from './pages/Cart.jsx'
 import {createBrowserRouter, RouterProvider} from "react-router-dom"
 
 // Define the router
@@ -21,6 +23,8 @@ const router = createBrowserRouter([
       { path: 'login', element: <Login /> }, //can use http://localhost:5173/login
       { path: 'profile', element: <ProfilePage /> }, //can use http://localhost:5173/profile
       { path: 'signup', element: <SignUp /> },
+      { path: '*', element: <NotFound /> },
+      { path: 'cart', element: <Cart /> }
     ],
   },
 ]);

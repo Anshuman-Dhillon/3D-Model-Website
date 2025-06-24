@@ -2,6 +2,13 @@ nav {
     height: 80px;
     font-size: 1.2rem;
     background: linear-gradient(to right, rgb(5, 156, 237), #70b7e7);
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2);
+}
+
+.secondary_nav {
+    height: 80px;
+    font-size: 1.2rem;
+    background: linear-gradient(to right, rgb(129, 195, 229), #71b9e8);
 }
 
 .search_button {
