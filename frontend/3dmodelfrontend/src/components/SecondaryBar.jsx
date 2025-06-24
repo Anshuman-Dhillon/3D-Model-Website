@@ -1,6 +1,6 @@
 import React from 'react';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
-import '../component design/NavBar.css'
+import '../component design/SecondaryBar.css'
 
 function SecondaryBar() {
     return (

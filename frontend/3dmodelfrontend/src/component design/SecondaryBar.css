@@ -1,0 +1,5 @@
+.secondary_nav {
+    height: 80px;
+    font-size: 1.2rem;
+    background: linear-gradient(to right, rgb(129, 195, 229), #71b9e8);
+}

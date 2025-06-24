@@ -9,7 +9,7 @@ function NavBar() {
   return (
     <>
       <nav className="navbar navbar-expand-lg navbar-dark bg-primary px-3">
-        <a className="navbar-brand title" href="#" onClick={() => navigate("/home")}>3DModeller</a>
+        <a className="navbar-brand title" href="#">3DModeller</a>
         <button
           className="navbar-toggler"
           type="button"
@@ -25,12 +25,12 @@ function NavBar() {
         <div className="collapse navbar-collapse" id="navbarSupportedContent">
           <ul className="navbar-nav me-auto mb-2 mb-lg-0">
             <li className="nav-item active">
-              <a className="nav-link nav_text" href="#" onClick={() => navigate("/home")}>
+              <a className="nav-link nav_text" href="#">
                 Home <span className="visually-hidden">(current)</span>
               </a>
             </li>
             <li className="nav-item active">
-              <a className="nav-link nav_text" href="#" onClick={() => navigate("/catalog")}>
+              <a className="nav-link nav_text" href="#">
                 Marketplace <span className="visually-hidden">(current)</span>
               </a>
             </li>
