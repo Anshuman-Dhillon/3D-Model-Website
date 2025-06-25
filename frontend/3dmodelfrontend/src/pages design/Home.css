@@ -1,0 +1,97 @@
+/* Overlay for home header and search bar */
+body, html {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.home-hero-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 0;
+  background: linear-gradient(120deg, #2196f3 0%, #1565c0 100%);
+  overflow: hidden;
+}
+
+.home-header-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 60vw;
+  min-width: 320px;
+  max-width: 700px;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  z-index: 2;
+  padding-left: 7vw;
+  background: transparent;
+  color: #fff;
+  pointer-events: none;
+}
+
+.home-header-overlay h1 {
+  font-size: 3rem;
+  font-weight: 400;
+  margin-bottom: 1.5rem;
+  line-height: 1.1;
+  background: rgba(0,0,0,0.0);
+  color: #fff;
+  pointer-events: auto;
+}
+
+.home-header-overlay a {
+  color: #fff;
+  text-decoration: underline;
+  margin-bottom: 2rem;
+  pointer-events: auto;
+}
+
+.home-search-form {
+  width: 100%;
+  max-width: 500px;
+  display: flex;
+  margin-top: 1.5rem;
+  pointer-events: auto;
+}
+
+.home-search-form input[type="search"] {
+  flex: 1;
+  border-radius: 4px 0 0 4px;
+  border: none;
+  padding: 1.1rem 1.2rem;
+  font-size: 1.1rem;
+  background: rgba(255,255,255,0.95);
+  color: #222;
+  box-shadow: 0 2px 8px 0 rgba(0,0,0,0.04);
+}
+
+.home-search-form button {
+  border-radius: 0 4px 4px 0;
+  border: none;
+  background: #1976d2;
+  color: #fff;
+  font-weight: 700;
+  padding: 0 2rem;
+  font-size: 1.1rem;
+  box-shadow: 0 2px 8px 0 rgba(0,0,0,0.04);
+  transition: background 0.2s;
+}
+
+.home-search-form button:hover {
+  background: #0d47a1;
+}
+
+@media (max-width: 900px) {
+  .home-header-overlay {
+    width: 100vw;
+    padding-left: 0;
+    align-items: center;
+    text-align: center;
+  }
+}

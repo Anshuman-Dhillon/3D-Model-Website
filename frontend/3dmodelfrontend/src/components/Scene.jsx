@@ -13,7 +13,20 @@ const MyScene = () => {
         }
 
         const scene = new THREE.Scene();
+        scene.background = new THREE.Color(0x070b1a);
 
+        const starGeometry = new THREE.SphereGeometry(0.05, 8, 8);
+        const starMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff });
+
+        for (let i = 0; i < 200; i++) {
+            const star = new THREE.Mesh(starGeometry, starMaterial.clone());
+            star.position.x = (Math.random() - 0.5) * 100;
+            star.position.y = (Math.random() - 0.5) * 100;
+            star.position.z = (Math.random() - 0.5) * 100;
+            scene.add(star);
+        }
+
+        
         const camera = new THREE.PerspectiveCamera(
             75,
             mountRef.current.clientWidth / mountRef.current.clientHeight,
@@ -21,18 +34,52 @@ const MyScene = () => {
             1000
         );
 
+        camera.position.z = 5;
+
+        // Renderer
         const renderer = new THREE.WebGLRenderer({ antialias: true });
 
         renderer.setSize(mountRef.current.clientWidth, mountRef.current.clientHeight);
+        renderer.shadowMap.enabled = true;
+        renderer.shadowMap.type = THREE.PCFSoftShadowMap;
         mountRef.current.appendChild(renderer.domElement);
 
+        // Cube with shadows
         const geometry = new THREE.BoxGeometry(2, 2, 2);
-        const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+        const material = new THREE.MeshStandardMaterial({ color: 0x00ff00, roughness: 0.4, metalness: 0.2 });
         const cube = new THREE.Mesh(geometry, material);
-
+        cube.castShadow = true;
+        cube.receiveShadow = false;
         scene.add(cube);
 
-        camera.position.z = 5;
+        // Ground plane to receive shadow
+        const planeGeometry = new THREE.PlaneGeometry(20, 20);
+        // Use a shadow-only material for the plane
+        const planeMaterial = new THREE.ShadowMaterial({ opacity: 0.4 });
+        const plane = new THREE.Mesh(planeGeometry, planeMaterial);
+        plane.rotation.x = -Math.PI / 2;
+        plane.position.y = -2;
+        plane.receiveShadow = true;
+        scene.add(plane);
+
+        // Lighting
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.3);
+        scene.add(ambientLight);
+
+        const dirLight = new THREE.DirectionalLight(0xffffff, 1.2);
+        dirLight.position.set(5, 10, 7.5);
+
+        dirLight.castShadow = true;
+        dirLight.shadow.mapSize.width = 1024;
+        dirLight.shadow.mapSize.height = 1024;
+        dirLight.shadow.camera.near = 1;
+        dirLight.shadow.camera.far = 30;
+        dirLight.shadow.camera.left = -10;
+        dirLight.shadow.camera.right = 10;
+        dirLight.shadow.camera.top = 10;
+        dirLight.shadow.camera.bottom = -10;
+
+        scene.add(dirLight);
 
         let animationFrameId;
 
@@ -45,14 +92,12 @@ const MyScene = () => {
 
         animate();
 
+        // Mouse drag rotation (same as before)
         let isDragging = false;
         let previousMousePosition = { x: 0, y: 0 };
 
         const toRadians = angle => angle * (Math.PI / 180);
-
-        const onMouseDown = (e) => {
-            isDragging = true;
-        };
+        const onMouseDown = (e) => { isDragging = true; };
 
         const onMouseMove = (e) => {
             if (!isDragging) return;
@@ -65,19 +110,11 @@ const MyScene = () => {
             cube.rotation.y += toRadians(deltaMove.x * 0.5);
             cube.rotation.x += toRadians(deltaMove.y * 0.5);
 
-            previousMousePosition = {
-                x: e.clientX,
-                y: e.clientY
-            };
+            previousMousePosition = { x: e.clientX, y: e.clientY };
         };
 
-        const onMouseUp = () => {
-            isDragging = false;
-        };
-
-        const onMouseLeave = () => {
-            isDragging = false;
-        };
+        const onMouseUp = () => { isDragging = false; };
+        const onMouseLeave = () => { isDragging = false; };
 
         mount.addEventListener('mousedown', onMouseDown);
         mount.addEventListener('mousemove', onMouseMove);

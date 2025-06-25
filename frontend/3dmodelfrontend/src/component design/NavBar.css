@@ -12,7 +12,7 @@ nav {
 }
 
 .search_button {
-    background-color: rgb(76, 194, 18);
+    background-color: rgb(18, 185, 194);
 }
 
 .nav_text {
@@ -33,4 +33,12 @@ nav {
     display: block;
     margin-top: 0;
     /* Optional: aligns menu with parent item */
+}
+
+/*
+  Custom top-to-bottom gradient for navbar: dark blue to deep space blue
+*/
+.custom-navbar-gradient {
+  background: linear-gradient(to bottom, #0d1a4a 0%, #070b1a 100%) !important;
+  border-bottom: 1px solid rgba(0,0,0,0.08);
 }
