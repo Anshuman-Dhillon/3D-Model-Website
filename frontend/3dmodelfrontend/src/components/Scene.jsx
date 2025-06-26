@@ -7,7 +7,7 @@ const MyScene = () => {
     useEffect(() => {
         const mount = mountRef.current;
         if (!mount) return;
-
+        
         while (mount.firstChild) {
             mount.removeChild(mount.firstChild);
         }
@@ -25,7 +25,6 @@ const MyScene = () => {
             star.position.z = (Math.random() - 0.5) * 100;
             scene.add(star);
         }
-
         
         const camera = new THREE.PerspectiveCamera(
             75,
@@ -36,7 +35,7 @@ const MyScene = () => {
 
         camera.position.z = 5;
 
-        // Renderer
+        //Renderer
         const renderer = new THREE.WebGLRenderer({ antialias: true });
 
         renderer.setSize(mountRef.current.clientWidth, mountRef.current.clientHeight);
@@ -44,7 +43,7 @@ const MyScene = () => {
         renderer.shadowMap.type = THREE.PCFSoftShadowMap;
         mountRef.current.appendChild(renderer.domElement);
 
-        // Cube with shadows
+        //Cube with shadows
         const geometry = new THREE.BoxGeometry(2, 2, 2);
         const material = new THREE.MeshStandardMaterial({ color: 0x00ff00, roughness: 0.4, metalness: 0.2 });
         const cube = new THREE.Mesh(geometry, material);
@@ -52,17 +51,17 @@ const MyScene = () => {
         cube.receiveShadow = false;
         scene.add(cube);
 
-        // Ground plane to receive shadow
+        //Ground plane to receive shadow
         const planeGeometry = new THREE.PlaneGeometry(20, 20);
-        // Use a shadow-only material for the plane
         const planeMaterial = new THREE.ShadowMaterial({ opacity: 0.4 });
         const plane = new THREE.Mesh(planeGeometry, planeMaterial);
+
         plane.rotation.x = -Math.PI / 2;
         plane.position.y = -2;
         plane.receiveShadow = true;
         scene.add(plane);
 
-        // Lighting
+        //Lighting
         const ambientLight = new THREE.AmbientLight(0xffffff, 0.3);
         scene.add(ambientLight);
 
@@ -92,7 +91,6 @@ const MyScene = () => {
 
         animate();
 
-        // Mouse drag rotation (same as before)
         let isDragging = false;
         let previousMousePosition = { x: 0, y: 0 };
 

@@ -6,6 +6,9 @@ import { useNavigate } from "react-router-dom";
 function NavBar() {
   const navigate = useNavigate();
 
+  //Control visibility of My Profile dropdown
+  const showProfileDropdown = false;
+
   return (
     <>
       <nav className="navbar navbar-expand-lg navbar-dark custom-navbar-gradient px-3">
@@ -25,35 +28,36 @@ function NavBar() {
         <div className="collapse navbar-collapse" id="navbarSupportedContent">
           <ul className="navbar-nav me-auto mb-2 mb-lg-0">
             <li className="nav-item active">
-              <a className="nav-link nav_text" href="#" onClick={() => navigate("/home")}>
+              <button className="nav-link nav_text btn btn-link p-0" style={{ textDecoration: 'none' }} onClick={() => navigate("/home")}>
                 Home <span className="visually-hidden">(current)</span>
-              </a>
+              </button>
             </li>
             <li className="nav-item active">
-              <a className="nav-link nav_text" href="#">
+              <button className="nav-link nav_text btn btn-link p-0" style={{ textDecoration: 'none' }} onClick={() => navigate("/catalog")}>
                 Marketplace <span className="visually-hidden">(current)</span>
-              </a>
+              </button>
             </li>
-
-            {/* My Profile dropdown hidden for now */}
-            {/* <li className="nav-item dropdown dropdown-hover nav_text">
-              <a
-                className="nav-link dropdown-toggle"
-                href="#"
-                id="navbarDropdown"
-                role="button"
-                aria-expanded="false"
-              >
-                My Profile
-              </a>
-              <ul className="dropdown-menu" aria-labelledby="navbarDropdown">
-                <li><a className="dropdown-item" href="#">View Profile</a></li>
-                <li><a className="dropdown-item" href="#">Posts</a></li>
-                <li><a className="dropdown-item" href="#">Upload New Model</a></li>
-                <li><hr className="dropdown-divider" /></li>
-                <li><a className="dropdown-item" href="#">Account Settings</a></li>
-              </ul>
-            </li> */}
+            {/* My Profile dropdown is hidden unless showProfileDropdown is true */}
+            {showProfileDropdown && (
+              <li className="nav-item dropdown dropdown-hover nav_text">
+                <a
+                  className="nav-link dropdown-toggle"
+                  href="#"
+                  id="navbarDropdown"
+                  role="button"
+                  aria-expanded="false"
+                >
+                  My Profile
+                </a>
+                <ul className="dropdown-menu" aria-labelledby="navbarDropdown">
+                  <li><a className="dropdown-item" href="#">View Profile</a></li>
+                  <li><a className="dropdown-item" href="#">Posts</a></li>
+                  <li><a className="dropdown-item" href="#">Upload New Model</a></li>
+                  <li><hr className="dropdown-divider" /></li>
+                  <li><a className="dropdown-item" href="#">Account Settings</a></li>
+                </ul>
+              </li>
+            )}
           </ul>
 
           <div className="d-flex align-items-center">
