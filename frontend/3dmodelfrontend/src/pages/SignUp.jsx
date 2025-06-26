@@ -1,17 +1,26 @@
 import React, { useState } from 'react';
 import "../pages design/SignUp.css"
+import MessageSpace from '../components/MessageSpace';
+import LoginFail from '../components/LoginFail';
 
 function SignUp() {
     const [email, setEmail] = useState('');
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
+    const [message, setMessage] = useState(null);
 
     const handleSignUpClick = () => {
         console.log('Sign Up button clicked!');
+        if (!email || !username || !password || !confirmPassword || password !== confirmPassword) {
+            setMessage(<LoginFail type="Sign Up"></LoginFail>);
+        }
     };
 
+
      return (
+        <div style={{ marginBottom: '100px' }}>
+        <MessageSpace message={message} />
         <div className="signup_container">
             <div className="signup_div d-flex flex-column align-items-center">
                 <h1 className="mb-4">Sign Up</h1>
@@ -68,6 +77,7 @@ function SignUp() {
                     Sign Up
                 </button>
             </div>
+        </div>
         </div>
     );
 }
