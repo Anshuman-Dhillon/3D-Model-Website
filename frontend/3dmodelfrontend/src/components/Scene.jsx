@@ -45,7 +45,7 @@ const MyScene = () => {
 
         //Cube with shadows
         const geometry = new THREE.BoxGeometry(2, 2, 2);
-        const material = new THREE.MeshStandardMaterial({ color: 0x7db7e3, roughness: 0.4, metalness: 0.2 });
+        const material = new THREE.MeshStandardMaterial({ color: 0x045dc2, roughness: 0.4, metalness: 0.2 });
         const cube = new THREE.Mesh(geometry, material);
         cube.castShadow = true;
         cube.receiveShadow = false;

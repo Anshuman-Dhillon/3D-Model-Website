@@ -42,7 +42,7 @@ function Cart() {
 
     return (
         <div style={{ 
-            backgroundColor: '#2D1B69', 
+            backgroundImage: 'linear-gradient(to right,rgb(34, 39, 79),rgb(35, 48, 88))', 
             minHeight: '100vh', 
             padding: '40px',
             display: 'flex',
@@ -74,7 +74,7 @@ function Cart() {
                         <button 
                             onClick={addTestItem}
                             style={{
-                                backgroundColor: '#3ba16e',
+                                backgroundColor: '#358278',
                                 color: 'white',
                                 border: 'none',
                                 padding: '10px 20px',
@@ -96,7 +96,7 @@ function Cart() {
                             <div 
                                 key={item.id}
                                 style={{ 
-                                    backgroundColor: '#1E1247',
+                                    backgroundImage: 'linear-gradient(to right,rgb(62, 65, 81),rgb(35, 61, 77))',
                                     borderRadius: '12px',
                                     border: '1px solid #3A3A4A',
                                     padding: '20px',
@@ -111,7 +111,6 @@ function Cart() {
                                     width: '180px',
                                     height: '120px',
                                     backgroundColor: '#3A3A4A',
-                                    border: '2px solid #8B7DC7',
                                     borderRadius: '8px',
                                     backgroundImage: `url(${item.image})`,
                                     backgroundSize: 'cover',
@@ -143,7 +142,7 @@ function Cart() {
                                             display: 'flex',
                                             alignItems: 'center',
                                             justifyContent: 'center',
-                                            backgroundColor: '#dc3545',
+                                            backgroundColor: '#8a373f',
                                             borderRadius: '8px',
                                             transition: 'opacity 0.2s'
                                         }}
@@ -164,7 +163,7 @@ function Cart() {
                                 <div style={{ 
                                     width: '100px',
                                     textAlign: 'center',
-                                    color: '#3ba16e',
+                                    color: '#358278',
                                     fontSize: '24px',
                                     fontWeight: 'bold'
                                 }}>
@@ -180,7 +179,7 @@ function Cart() {
                     <div style={{ position: 'sticky', top: '20px' }}>
                         {/* Order Summary Container */}
                         <div style={{ 
-                            backgroundColor: '#1E1247',
+                            backgroundColor: '#1b283d',
                             borderRadius: '12px',
                             border: '1px solid #3A3A4A',
                             padding: '30px'
@@ -212,20 +211,6 @@ function Cart() {
                                 </span>
                             </div>
 
-                            {/* Shipping */}
-                            <div style={{ 
-                                display: 'flex', 
-                                justifyContent: 'space-between',
-                                marginBottom: '20px'
-                            }}>
-                                <span style={{ color: '#B8B8B8', fontSize: '16px' }}>
-                                    Shipping
-                                </span>
-                                <span style={{ color: '#3ba16e', fontSize: '16px' }}>
-                                    FREE
-                                </span>
-                            </div>
-
                             {/* Total Section */}
                             <div style={{ 
                                 display: 'flex', 
@@ -237,7 +222,7 @@ function Cart() {
                                 <span style={{ color: 'white', fontSize: '18px', fontWeight: 'bold' }}>
                                     TOTAL
                                 </span>
-                                <span style={{ color: '#3ba16e', fontSize: '20px', fontWeight: 'bold' }}>
+                                <span style={{ color: '#358278', fontSize: '20px', fontWeight: 'bold' }}>
                                     ${calculateTotal()}
                                 </span>
                             </div>
@@ -245,8 +230,8 @@ function Cart() {
                             {/* Payment Buttons */}
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
                                 <button style={{ 
-                                    backgroundColor: '#65a197',
-                                    border: '2px solid #3ba16e',
+                                    backgroundColor: '#03a63f',
+                                    border: '2px solid #03a63f',
                                     color: 'white',
                                     fontSize: '16px',
                                     fontWeight: 'bold',
@@ -257,14 +242,14 @@ function Cart() {
                                     transition: 'all 0.2s'
                                 }}
                                 onMouseOver={(e) => e.target.style.backgroundColor = '#4CAF50'}
-                                onMouseOut={(e) => e.target.style.backgroundColor = '#3ba16e'}
+                                onMouseOut={(e) => e.target.style.backgroundColor = '#03a63f'}
                                 >
                                     💳 PAYPAL
                                 </button>
 
                                 <button style={{ 
-                                    backgroundColor: '#5A67D8',
-                                    border: '2px solid #5A67D8',
+                                    backgroundColor: '#0272c2',
+                                    border: '2px solid #0272c2',
                                     color: 'white',
                                     fontSize: '16px',
                                     fontWeight: 'bold',
@@ -275,7 +260,7 @@ function Cart() {
                                     transition: 'all 0.2s'
                                 }}
                                 onMouseOver={(e) => e.target.style.backgroundColor = '#4C63D2'}
-                                onMouseOut={(e) => e.target.style.backgroundColor = '#5A67D8'}
+                                onMouseOut={(e) => e.target.style.backgroundColor = '#0272c2'}
                                 >
                                     🏪 GOOGLE PAY
                                 </button>
