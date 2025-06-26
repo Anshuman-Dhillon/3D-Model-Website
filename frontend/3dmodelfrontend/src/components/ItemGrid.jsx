@@ -70,7 +70,7 @@ function ItemGrid() {
     ];
 
     return (
-        <div className="d-flex justify-content-center py-4" style={{ backgroundColor: '#f8f9fa' }}>
+        <div className="d-flex justify-content-center py-4">
             <div className="container" style={{ maxWidth: '1200px' }}>
                 <div className="row g-4 justify-content-center">
                     {products.map(product => (

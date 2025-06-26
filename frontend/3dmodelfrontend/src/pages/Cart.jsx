@@ -42,7 +42,7 @@ function Cart() {
 
     return (
         <div style={{ 
-            backgroundImage: 'linear-gradient(to right,rgb(34, 39, 79),rgb(35, 48, 88))', 
+            backgroundImage: 'linear-gradient(to right, rgb(34, 60, 79), rgb(35, 48, 88))', 
             minHeight: '100vh', 
             padding: '40px',
             display: 'flex',
