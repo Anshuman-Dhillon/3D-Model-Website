@@ -39,8 +39,8 @@ nav {
   Custom top-to-bottom gradient for navbar: dark blue to deep space blue
 */
 .custom-navbar-gradient {
-  background: linear-gradient(to bottom, #0d1a4a 0%, #070b1a 100%) !important;
-  border-bottom: 1px solid rgba(0,0,0,0.08);
+  background: linear-gradient(to bottom, #303b62 0%, #070b1a 100%) !important;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.485);
 }
 
 .navbar-nav .nav-item {
