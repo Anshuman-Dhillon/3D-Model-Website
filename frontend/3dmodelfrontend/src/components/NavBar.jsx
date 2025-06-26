@@ -6,13 +6,16 @@ import { useNavigate } from "react-router-dom";
 function NavBar() {
   const navigate = useNavigate();
 
-  //Control visibility of My Profile dropdown
+  // Control visibility of My Profile dropdown
   const showProfileDropdown = false;
 
   return (
     <>
       <nav className="navbar navbar-expand-lg navbar-dark custom-navbar-gradient px-3">
-        <a className="navbar-brand title" href="#">3DModeller</a>
+        <div className="d-flex align-items-center">
+          <a className="navbar-brand title me-4" href="#" style={{ whiteSpace: 'nowrap' }}>3DModeller</a>
+        </div>
+
         <button
           className="navbar-toggler"
           type="button"
@@ -26,18 +29,27 @@ function NavBar() {
         </button>
 
         <div className="collapse navbar-collapse" id="navbarSupportedContent">
-          <ul className="navbar-nav me-auto mb-2 mb-lg-0">
+          <ul className="navbar-nav ms-2 me-auto mb-2 mb-lg-0">
             <li className="nav-item active">
-              <button className="nav-link nav_text btn btn-link p-0" style={{ textDecoration: 'none' }} onClick={() => navigate("/home")}>
+              <button
+                className="nav-link nav_text btn btn-link p-0"
+                style={{ textDecoration: 'none' }}
+                onClick={() => navigate("/home")}
+              >
                 Home <span className="visually-hidden">(current)</span>
               </button>
             </li>
+
             <li className="nav-item active">
-              <button className="nav-link nav_text btn btn-link p-0" style={{ textDecoration: 'none' }} onClick={() => navigate("/catalog")}>
+              <button
+                className="nav-link nav_text btn btn-link p-0"
+                style={{ textDecoration: 'none' }}
+                onClick={() => navigate("/catalog")}
+              >
                 Marketplace <span className="visually-hidden">(current)</span>
               </button>
             </li>
-            {/* My Profile dropdown is hidden unless showProfileDropdown is true */}
+
             {showProfileDropdown && (
               <li className="nav-item dropdown dropdown-hover nav_text">
                 <a
@@ -61,15 +73,20 @@ function NavBar() {
           </ul>
 
           <div className="d-flex align-items-center">
-            {/* Login & Sign Up Buttons */}
-            <button className="btn btn-outline-light me-2" type="button" onClick={() => navigate("/login")}>
+            <button
+              className="btn btn-outline-light me-2"
+              type="button"
+              onClick={() => navigate("/login")}
+            >
               Login
             </button>
-            <button className="btn btn-light me-4" type="button" onClick={() => navigate("/signup")}>
+            <button
+              className="btn btn-light me-4"
+              type="button"
+              onClick={() => navigate("/signup")}
+            >
               Sign Up
             </button>
-
-            {/* Search Form removed */}
           </div>
         </div>
       </nav>
