@@ -74,7 +74,7 @@ function Cart() {
                         <button 
                             onClick={addTestItem}
                             style={{
-                                backgroundColor: '#5CB85C',
+                                backgroundColor: '#3ba16e',
                                 color: 'white',
                                 border: 'none',
                                 padding: '10px 20px',
@@ -164,7 +164,7 @@ function Cart() {
                                 <div style={{ 
                                     width: '100px',
                                     textAlign: 'center',
-                                    color: '#5CB85C',
+                                    color: '#3ba16e',
                                     fontSize: '24px',
                                     fontWeight: 'bold'
                                 }}>
@@ -221,7 +221,7 @@ function Cart() {
                                 <span style={{ color: '#B8B8B8', fontSize: '16px' }}>
                                     Shipping
                                 </span>
-                                <span style={{ color: '#5CB85C', fontSize: '16px' }}>
+                                <span style={{ color: '#3ba16e', fontSize: '16px' }}>
                                     FREE
                                 </span>
                             </div>
@@ -237,7 +237,7 @@ function Cart() {
                                 <span style={{ color: 'white', fontSize: '18px', fontWeight: 'bold' }}>
                                     TOTAL
                                 </span>
-                                <span style={{ color: '#5CB85C', fontSize: '20px', fontWeight: 'bold' }}>
+                                <span style={{ color: '#3ba16e', fontSize: '20px', fontWeight: 'bold' }}>
                                     ${calculateTotal()}
                                 </span>
                             </div>
@@ -245,8 +245,8 @@ function Cart() {
                             {/* Payment Buttons */}
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
                                 <button style={{ 
-                                    backgroundColor: '#5CB85C',
-                                    border: '2px solid #5CB85C',
+                                    backgroundColor: '#65a197',
+                                    border: '2px solid #3ba16e',
                                     color: 'white',
                                     fontSize: '16px',
                                     fontWeight: 'bold',
@@ -257,7 +257,7 @@ function Cart() {
                                     transition: 'all 0.2s'
                                 }}
                                 onMouseOver={(e) => e.target.style.backgroundColor = '#4CAF50'}
-                                onMouseOut={(e) => e.target.style.backgroundColor = '#5CB85C'}
+                                onMouseOut={(e) => e.target.style.backgroundColor = '#3ba16e'}
                                 >
                                     💳 PAYPAL
                                 </button>
