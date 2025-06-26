@@ -82,7 +82,7 @@ function Cart() {
                                 cursor: 'pointer'
                             }}
                         >
-                            Add Test Item
+                            Add New Item
                         </button>
                     </div>
 
