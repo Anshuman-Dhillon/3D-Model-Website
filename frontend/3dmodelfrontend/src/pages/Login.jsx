@@ -11,7 +11,7 @@ function Login() {
     const handleLoginClick = () => {
         console.log('Login button clicked!');
         if (!user || !password) {
-            setMessage(<LoginFail type="Sign Up"></LoginFail>);
+            setMessage(<LoginFail type="Log In"></LoginFail>);
         }
     };
 
