@@ -1,0 +1,59 @@
+import mongoose from "mongoose";
+import modelSchema from "./model.js";
+
+const userSchema = new mongoose.Schema({
+    transaction_history: {
+        type: Number,
+        required: true,
+        min: 0,
+    }/*,
+    orders: {
+        total_cost: {
+            type: Number,
+            required: true,
+            min: 0,
+            default: 0
+        },
+        items: {
+            type: [modelSchema],
+            default: []
+        }
+    },
+    posted_models: {
+        type: [modelSchema],
+        default: []
+    }*/
+    ,settings: {
+        payment_methods: {
+            google_pay_accounts: {
+                default: []
+            },
+            paypal_accounts: {
+                default: []
+            }
+        },
+        personal_info: {
+            email_address: {
+                type: String,
+                required: true,
+                unique: true,
+            },
+            username: {
+                type: String,
+                required: true,
+                unique: true,
+            },
+            password: {
+                type: String,
+                required: true,
+            }
+        },
+    }
+},
+
+    { timestamps: true }
+);
+
+const User = mongoose.model("User", userSchema);
+
+export default User;

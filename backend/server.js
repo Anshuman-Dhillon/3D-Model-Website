@@ -12,16 +12,21 @@ dotenv.config()
 const PORT = process.env.PORT || 5000;
 
 const app = express()
-connectDB()
 
-//allow the backend to return json objects
+//middleware
 app.use(express.json())
+app.use(express.urlencoded({extended: true}))
 
 app.use("/api/models", routes)
 
 app.use(notFound);
 app.use(errorHandler);
 
-app.listen(PORT, () => {
+connectDB().then(() => {
+    app.listen(PORT, () => {
     console.log(`Server started on PORT: ${PORT}`)
+})
+}).catch((error) => {
+    console.error("Database connection failed:", error)
+    process.exit(1)
 })
