@@ -151,12 +151,27 @@ export async function deleteUser(req, res) {
 //CRUD operations for user interactions with models
 export async function addCart(req, res) {
     try {
-        item = getModelById(req, res);
-        // add model to cart
-        const user = getUserById(req, res);
-        const model = getModelById(req, res);
+        const userId = req.params.id; // Assuming the user ID is in the URL
+        const modelId = req.body.modelId; // Assuming modelId is sent in request body
 
-        res.status(201).json({ message: "Added to Cart" });
+        // Fetch model
+        const model = await Model.findById(modelId);
+        if (!model) {
+            return res.status(404).json({ message: "Model not found" });
+        }
+
+        // Append model to user's cart (e.g., orders.items)
+        const updatedUser = await User.findByIdAndUpdate(
+            userId,
+            {
+                $push: {
+                    "orders.items": model,
+                },
+            },
+            { new: true, runValidators: true }
+        );
+
+        res.status(201).json({ message: "Added to cart", model: model });
     } catch(error) {
         res.status(500).json({ message: "Unable to add model to cart", error: error.message });
         console.error("Unable to add model to cart", error);
