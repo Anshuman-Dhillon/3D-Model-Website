@@ -6,7 +6,7 @@ function ModelItem({ name, description, price, image }) {
     return (
         <div
             className="card h-100 shadow-sm border-0"
-            style={{ borderRadius: '12px', overflow: 'hidden', width: '320px' }}
+            style={{ borderRadius: '12px', overflow: 'hidden', width: '320px', backgroundColor: '#748aa1' }}
         >
             {/* Image section with zoom */}
             <div style={{ height: '180px', overflow: 'hidden' }}>

@@ -12,7 +12,7 @@ nav {
 }
 
 .search_button {
-    background-color: rgb(76, 194, 18);
+    background-color: rgb(18, 185, 194);
 }
 
 .nav_text {
@@ -33,4 +33,43 @@ nav {
     display: block;
     margin-top: 0;
     /* Optional: aligns menu with parent item */
+}
+
+/*
+  Custom top-to-bottom gradient for navbar: dark blue to deep space blue
+*/
+.custom-navbar-gradient {
+  background: linear-gradient(to bottom, #303b62 0%, #070b1a 100%) !important;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.485);
+}
+
+.navbar-nav .nav-item {
+  margin-right: 2rem;
+}
+
+.navbar-nav .nav-item:last-child {
+  margin-right: 0;
+}
+
+.nav-link.nav_text {
+  position: relative;
+  overflow: hidden;
+  transition: color 0.2s;
+}
+
+.nav-link.nav_text::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 0%;
+  height: 2px;
+  background: #fff;
+  transition: width 0.3s cubic-bezier(0.4,0,0.2,1), left 0.3s cubic-bezier(0.4,0,0.2,1);
+}
+
+.nav-link.nav_text:hover::after,
+.nav-link.nav_text:focus::after {
+  width: 100%;
+  left: 0;
 }

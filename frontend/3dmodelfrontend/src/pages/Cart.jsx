@@ -41,205 +41,229 @@ function Cart() {
     };
 
     return (
-        <div style={{ backgroundColor: '#2D1B69', minHeight: '100vh', padding: '20px' }}>
-            <div className="container-fluid">
-                <div className="row">
-                    {/* Left Column - Cart Items */}
-                    <div className="col-lg-7 col-md-6">
-                        {/* Cart Header */}
-                        <div className="d-flex justify-content-between align-items-center mb-4">
-                            <button 
-                                className="btn btn-outline-light px-4 py-2"
-                                style={{ 
-                                    backgroundColor: 'transparent',
-                                    border: '2px solid #8B7DC7',
-                                    color: 'white',
-                                    fontSize: '18px'
-                                }}
-                            >
-                                Cart
-                            </button>
-                            <button 
-                                className="btn btn-success"
-                                onClick={addTestItem}
-                            >
-                                Add Test Item
-                            </button>
+        <div style={{ 
+            backgroundImage: 'linear-gradient(to right, rgb(34, 60, 79), rgb(35, 48, 88))', 
+            minHeight: '100vh', 
+            padding: '40px',
+            display: 'flex',
+            justifyContent: 'center'
+        }}>
+            {/* Fixed width container to prevent responsive changes */}
+            <div style={{ 
+                width: '1200px', 
+                maxWidth: '100%',
+                display: 'flex',
+                gap: '30px'
+            }}>
+                {/* Left Column - Cart Items (Fixed width) */}
+                <div style={{ width: '750px', flexShrink: 0 }}>
+                    {/* Cart Header */}
+                    <div style={{ 
+                        display: 'flex', 
+                        justifyContent: 'space-between', 
+                        alignItems: 'center', 
+                        marginBottom: '30px' 
+                    }}>
+                        <div style={{ 
+                            color: 'white',
+                            fontSize: '24px',
+                            fontWeight: 'bold'
+                        }}>
+                            My Cart
                         </div>
-
-                        {/* Cart Items Container with Dynamic Scrolling */}
-                        <div 
-                            style={{ 
-                                maxHeight: '70vh', 
-                                overflowY: 'auto',
-                                paddingRight: '10px'
+                        <button 
+                            onClick={addTestItem}
+                            style={{
+                                backgroundColor: '#358278',
+                                color: 'white',
+                                border: 'none',
+                                padding: '10px 20px',
+                                borderRadius: '5px',
+                                cursor: 'pointer'
                             }}
                         >
-                            {cartItems.map((item) => (
-                                <div 
-                                    key={item.id}
-                                    className="mb-3 p-3"
-                                    style={{ 
-                                        backgroundColor: 'transparent',
-                                        border: '2px solid #8B7DC7',
-                                        borderRadius: '8px'
-                                    }}
-                                >
-                                    <div className="row align-items-center">
-                                        {/* Game Image */}
-                                        <div className="col-md-3 col-4">
-                                            <div 
-                                                style={{ 
-                                                    backgroundColor: '#3A3A4A',
-                                                    border: '2px solid #8B7DC7',
-                                                    borderRadius: '4px',
-                                                    height: '100px',
-                                                    display: 'flex',
-                                                    alignItems: 'center',
-                                                    justifyContent: 'center',
-                                                    backgroundImage: `url(${item.image})`,
-                                                    backgroundSize: 'cover',
-                                                    backgroundPosition: 'center'
-                                                }}
-                                            >
-                                                {!item.image && (
-                                                    <span style={{ color: 'white', fontSize: '12px' }}>Image</span>
-                                                )}
-                                            </div>
-                                        </div>
-
-                                        {/* Game Details */}
-                                        <div className="col-md-6 col-5">
-                                            <div 
-                                                className="mb-2 p-2 text-center"
-                                                style={{ 
-                                                    backgroundColor: 'transparent',
-                                                    border: '2px solid #8B7DC7',
-                                                    borderRadius: '4px',
-                                                    color: 'white'
-                                                }}
-                                            >
-                                                {item.name}
-                                            </div>
-                                            <button 
-                                                className="btn btn-danger btn-sm"
-                                                onClick={() => deleteItem(item.id)}
-                                                style={{ 
-                                                    backgroundColor: 'transparent',
-                                                    border: '2px solid #8B7DC7',
-                                                    color: 'white',
-                                                    fontSize: '10px',
-                                                    padding: '4px 8px'
-                                                }}
-                                            >
-                                                delete item image
-                                            </button>
-                                        </div>
-
-                                        {/* Cost */}
-                                        <div className="col-md-3 col-3">
-                                            <div 
-                                                className="text-center p-2"
-                                                style={{ 
-                                                    backgroundColor: 'transparent',
-                                                    border: '2px solid #8B7DC7',
-                                                    borderRadius: '4px',
-                                                    color: 'white'
-                                                }}
-                                            >
-                                                ${item.cost.toFixed(2)}
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
+                            Add New Item
+                        </button>
                     </div>
 
-                    {/* Right Column - Order Summary */}
-                    <div className="col-lg-5 col-md-6">
-                        <div className="h-100">
-                            {/* Order Options */}
+                    {/* Cart Items Container */}
+                    <div style={{ 
+                        maxHeight: '80vh', 
+                        overflowY: 'auto',
+                        paddingRight: '15px'
+                    }}>
+                        {cartItems.map((item) => (
                             <div 
-                                className="mb-4 p-3 text-center"
+                                key={item.id}
                                 style={{ 
-                                    backgroundColor: 'transparent',
-                                    border: '2px solid #8B7DC7',
-                                    borderRadius: '8px'
+                                    backgroundImage: 'linear-gradient(to right,rgb(62, 65, 81),rgb(35, 61, 77))',
+                                    borderRadius: '12px',
+                                    border: '1px solid #3A3A4A',
+                                    padding: '20px',
+                                    marginBottom: '20px',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    minHeight: '140px'
                                 }}
                             >
-                                <button 
-                                    className="btn btn-outline-light w-100 py-2"
-                                    style={{ 
-                                        backgroundColor: 'transparent',
-                                        border: '2px solid #8B7DC7',
+                                {/* Game Image - Fixed size */}
+                                <div style={{ 
+                                    width: '180px',
+                                    height: '120px',
+                                    backgroundColor: '#3A3A4A',
+                                    borderRadius: '8px',
+                                    backgroundImage: `url(${item.image})`,
+                                    backgroundSize: 'cover',
+                                    backgroundPosition: 'center',
+                                    flexShrink: 0,
+                                    marginRight: '30px'
+                                }}>
+                                </div>
+
+                                {/* Game Details - Fixed width */}
+                                <div style={{ 
+                                    flex: 1,
+                                    paddingRight: '20px'
+                                }}>
+                                    <div style={{ 
                                         color: 'white',
-                                        fontSize: '16px'
-                                    }}
-                                >
-                                    ORDER OPTIONS
-                                </button>
+                                        fontSize: '20px',
+                                        fontWeight: '500',
+                                        marginBottom: '20px'
+                                    }}>
+                                        {item.name}
+                                    </div>
+                                    <div 
+                                        onClick={() => deleteItem(item.id)}
+                                        style={{ 
+                                            cursor: 'pointer',
+                                            width: '45px',
+                                            height: '45px',
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                            backgroundColor: '#8a373f',
+                                            borderRadius: '8px',
+                                            transition: 'opacity 0.2s'
+                                        }}
+                                        onMouseOver={(e) => e.target.closest('div').style.opacity = '0.8'}
+                                        onMouseOut={(e) => e.target.closest('div').style.opacity = '1'}
+                                    >
+                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M3 6h18l-1.5 14H4.5L3 6z" fill="white" stroke="white" strokeWidth="1"/>
+                                            <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" stroke="white" strokeWidth="1" fill="none"/>
+                                            <path d="M10 11v6" stroke="#dc3545" strokeWidth="1"/>
+                                            <path d="M14 11v6" stroke="#dc3545" strokeWidth="1"/>
+                                            <path d="M5 6h14" stroke="white" strokeWidth="1"/>
+                                        </svg>
+                                    </div>
+                                </div>
+
+                                {/* Cost - Fixed width */}
+                                <div style={{ 
+                                    width: '100px',
+                                    textAlign: 'center',
+                                    color: '#358278',
+                                    fontSize: '24px',
+                                    fontWeight: 'bold'
+                                }}>
+                                    ${item.cost.toFixed(2)}
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+
+                {/* Right Column - Order Summary (Fixed width) */}
+                <div style={{ width: '420px', flexShrink: 0 }}>
+                    <div style={{ position: 'sticky', top: '20px' }}>
+                        {/* Order Summary Container */}
+                        <div style={{ 
+                            backgroundColor: '#1b283d',
+                            borderRadius: '12px',
+                            border: '1px solid #3A3A4A',
+                            padding: '30px'
+                        }}>
+                            {/* Order Summary Title */}
+                            <div style={{ 
+                                color: 'white',
+                                fontSize: '22px',
+                                fontWeight: 'bold',
+                                borderBottom: '2px solid #8B7DC7',
+                                paddingBottom: '10px',
+                                marginBottom: '25px',
+                                textAlign: 'center'
+                            }}>
+                                Order Summary
                             </div>
 
-                            {/* Payment Buttons */}
-                            <div className="mb-4">
-                                <button 
-                                    className="btn w-100 mb-3 py-3"
-                                    style={{ 
-                                        backgroundColor: '#5CB85C',
-                                        border: '2px solid #8B7DC7',
-                                        color: 'white',
-                                        fontSize: '16px',
-                                        borderRadius: '8px'
-                                    }}
-                                >
-                                    PAYPAL PAY Image button
-                                </button>
-
-                                <button 
-                                    className="btn w-100 py-3"
-                                    style={{ 
-                                        backgroundColor: '#5A67D8',
-                                        border: '2px solid #8B7DC7',
-                                        color: 'white',
-                                        fontSize: '16px',
-                                        borderRadius: '8px'
-                                    }}
-                                >
-                                    GOOGLE PAY Image button
-                                </button>
+                            {/* Items Count */}
+                            <div style={{ 
+                                display: 'flex', 
+                                justifyContent: 'space-between',
+                                marginBottom: '15px'
+                            }}>
+                                <span style={{ color: '#B8B8B8', fontSize: '16px' }}>
+                                    Items ({cartItems.length})
+                                </span>
+                                <span style={{ color: 'white', fontSize: '16px' }}>
+                                    ${calculateTotal()}
+                                </span>
                             </div>
 
                             {/* Total Section */}
-                            <div className="row">
-                                <div className="col-6">
-                                    <div 
-                                        className="text-center p-2"
-                                        style={{ 
-                                            backgroundColor: 'transparent',
-                                            border: '2px solid #8B7DC7',
-                                            borderRadius: '4px',
-                                            color: 'white',
-                                            fontSize: '16px'
-                                        }}
-                                    >
-                                        TOTAL
-                                    </div>
-                                </div>
-                                <div className="col-6">
-                                    <div 
-                                        className="text-center p-2"
-                                        style={{ 
-                                            backgroundColor: 'transparent',
-                                            border: '2px solid #8B7DC7',
-                                            borderRadius: '4px',
-                                            color: 'white',
-                                            fontSize: '16px'
-                                        }}
-                                    >
-                                        ${calculateTotal()}
-                                    </div>
-                                </div>
+                            <div style={{ 
+                                display: 'flex', 
+                                justifyContent: 'space-between',
+                                borderTop: '1px solid #3A3A4A',
+                                paddingTop: '15px',
+                                marginBottom: '30px'
+                            }}>
+                                <span style={{ color: 'white', fontSize: '18px', fontWeight: 'bold' }}>
+                                    TOTAL
+                                </span>
+                                <span style={{ color: '#358278', fontSize: '20px', fontWeight: 'bold' }}>
+                                    ${calculateTotal()}
+                                </span>
+                            </div>
+
+                            {/* Payment Buttons */}
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
+                                <button style={{ 
+                                    backgroundColor: '#03a63f',
+                                    border: '2px solid #03a63f',
+                                    color: 'white',
+                                    fontSize: '16px',
+                                    fontWeight: 'bold',
+                                    borderRadius: '8px',
+                                    width: '100%',
+                                    padding: '15px',
+                                    cursor: 'pointer',
+                                    transition: 'all 0.2s'
+                                }}
+                                onMouseOver={(e) => e.target.style.backgroundColor = '#4CAF50'}
+                                onMouseOut={(e) => e.target.style.backgroundColor = '#03a63f'}
+                                >
+                                    💳 PAYPAL
+                                </button>
+
+                                <button style={{ 
+                                    backgroundColor: '#0272c2',
+                                    border: '2px solid #0272c2',
+                                    color: 'white',
+                                    fontSize: '16px',
+                                    fontWeight: 'bold',
+                                    borderRadius: '8px',
+                                    width: '100%',
+                                    padding: '15px',
+                                    cursor: 'pointer',
+                                    transition: 'all 0.2s'
+                                }}
+                                onMouseOver={(e) => e.target.style.backgroundColor = '#4C63D2'}
+                                onMouseOut={(e) => e.target.style.backgroundColor = '#0272c2'}
+                                >
+                                    🏪 GOOGLE PAY
+                                </button>
                             </div>
                         </div>
                     </div>

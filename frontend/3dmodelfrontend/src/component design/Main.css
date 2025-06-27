@@ -3,5 +3,5 @@ main {
     /* space to make room for footer */
 }
 #root {
-    background-color: #f8f9fa;
+    background-image: linear-gradient(to right, rgb(34, 60, 79), rgb(35, 48, 88));
 }

@@ -1,15 +1,23 @@
 import React, { useState } from 'react';
 import "../pages design/Login.css"
+import MessageSpace from '../components/MessageSpace';
+import LoginFail from '../components/LoginFail';
 
 function Login() {
     const [user, setUser] = useState('');
     const [password, setPassword] = useState('');
+    const [message, setMessage] = useState(null);
 
     const handleLoginClick = () => {
         console.log('Login button clicked!');
+        if (!user || !password) {
+            setMessage(<LoginFail type="Log In"></LoginFail>);
+        }
     };
 
      return (
+        <div>
+        <MessageSpace message={message} />
         <div className="login_container">
             <div className="login_div d-flex flex-column align-items-center">
                 <h1 className="mb-4">Login</h1>
@@ -42,6 +50,7 @@ function Login() {
                     Login
                 </button>
             </div>
+        </div>
         </div>
     );
 }
