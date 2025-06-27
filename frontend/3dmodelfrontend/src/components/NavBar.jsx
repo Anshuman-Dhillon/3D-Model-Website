@@ -5,8 +5,6 @@ import { useNavigate } from "react-router-dom";
 
 function NavBar() {
   const navigate = useNavigate();
-
-  // Control visibility of My Profile dropdown
   const showProfileDropdown = false;
 
   return (
@@ -15,7 +13,6 @@ function NavBar() {
         <div className="d-flex align-items-center">
           <a className="navbar-brand title me-4" href="#" style={{ whiteSpace: 'nowrap' }}>3DModeller</a>
         </div>
-
         <button
           className="navbar-toggler"
           type="button"
@@ -27,7 +24,6 @@ function NavBar() {
         >
           <span className="navbar-toggler-icon"></span>
         </button>
-
         <div className="collapse navbar-collapse" id="navbarSupportedContent">
           <ul className="navbar-nav ms-2 me-auto mb-2 mb-lg-0">
             <li className="nav-item active">
@@ -39,7 +35,6 @@ function NavBar() {
                 Home <span className="visually-hidden">(current)</span>
               </button>
             </li>
-
             <li className="nav-item active">
               <button
                 className="nav-link nav_text btn btn-link p-0"
@@ -49,7 +44,6 @@ function NavBar() {
                 Marketplace <span className="visually-hidden">(current)</span>
               </button>
             </li>
-
             {showProfileDropdown && (
               <li className="nav-item dropdown dropdown-hover nav_text">
                 <a
@@ -71,7 +65,6 @@ function NavBar() {
               </li>
             )}
           </ul>
-
           <div className="d-flex align-items-center">
             <button
               className="btn btn-outline-light me-2"
@@ -81,11 +74,24 @@ function NavBar() {
               Login
             </button>
             <button
-              className="btn btn-light me-4"
+              className="btn btn-light me-3"
               type="button"
               onClick={() => navigate("/signup")}
             >
               Sign Up
+            </button>
+            <button
+              className="btn p-2"
+              type="button"
+              onClick={() => navigate("/cart")}
+              title="Shopping Cart"
+              style={{ border: 'none', background: 'transparent' }}
+            >
+              <img 
+                src="https://cdnjs.cloudflare.com/ajax/libs/twemoji/14.0.2/svg/1f6d2.svg" 
+                alt="Cart" 
+                style={{ width: '32px', height: '32px' }}
+              />
             </button>
           </div>
         </div>

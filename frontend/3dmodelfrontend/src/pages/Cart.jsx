@@ -48,14 +48,14 @@ function Cart() {
             display: 'flex',
             justifyContent: 'center'
         }}>
-            {/* Fixed width container to prevent responsive changes */}
+            {}
             <div style={{ 
                 width: '1200px', 
                 maxWidth: '100%',
                 display: 'flex',
                 gap: '30px'
             }}>
-                {/* Left Column - Cart Items (Fixed width) */}
+                {}
                 <div style={{ width: '750px', flexShrink: 0 }}>
                     {/* Cart Header */}
                     <div style={{ 
@@ -106,7 +106,7 @@ function Cart() {
                                     minHeight: '140px'
                                 }}
                             >
-                                {/* Game Image - Fixed size */}
+                                {/* Image - Fixed size */}
                                 <div style={{ 
                                     width: '180px',
                                     height: '120px',
@@ -120,7 +120,7 @@ function Cart() {
                                 }}>
                                 </div>
 
-                                {/* Game Details - Fixed width */}
+                                {/* Details - Fixed width */}
                                 <div style={{ 
                                     flex: 1,
                                     paddingRight: '20px'
@@ -151,10 +151,10 @@ function Cart() {
                                     >
                                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                             <path d="M3 6h18l-1.5 14H4.5L3 6z" fill="white" stroke="white" strokeWidth="1"/>
-                                            <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" stroke="white" strokeWidth="1" fill="none"/>
-                                            <path d="M10 11v6" stroke="#dc3545" strokeWidth="1"/>
-                                            <path d="M14 11v6" stroke="#dc3545" strokeWidth="1"/>
-                                            <path d="M5 6h14" stroke="white" strokeWidth="1"/>
+                                            <path d="" stroke="white" strokeWidth="1" fill="none"/>
+                                            <path d="" stroke="#dc3545" strokeWidth="1"/>
+                                            <path d="" stroke="#dc3545" strokeWidth="1"/>
+                                            <path d="" stroke="white" strokeWidth="1"/>
                                         </svg>
                                     </div>
                                 </div>
@@ -174,7 +174,7 @@ function Cart() {
                     </div>
                 </div>
 
-                {/* Right Column - Order Summary (Fixed width) */}
+                {/* Order Summary (Fixed width) */}
                 <div style={{ width: '420px', flexShrink: 0 }}>
                     <div style={{ position: 'sticky', top: '20px' }}>
                         {/* Order Summary Container */}
