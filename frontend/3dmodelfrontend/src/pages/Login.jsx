@@ -28,7 +28,7 @@ function Login() {
     return (
         <div>
             <MessageSpace message={message} />
-            <div className="login_container">
+            <div className="login_container" style={{ marginBottom: "100px"}}>
                 <div className="login_div d-flex flex-column align-items-center">
                     <h1 className="mb-4">Login</h1>
                     

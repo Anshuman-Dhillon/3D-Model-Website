@@ -30,7 +30,7 @@ function SignUp() {
     return (
         <div style={{ marginBottom: '100px' }}>
             <MessageSpace message={message} />
-            <div className="signup_container">
+            <div className="signup_container" style={{ marginTop: '100px', marginBottom: "200px"}}>
                 <div className="signup_div d-flex flex-column align-items-center">
                     <h1 className="mb-4">Sign Up</h1>
                    
