@@ -1,0 +1,10 @@
+.rounded_box {
+    height: 75px;
+    width: calc(100% - 20px);
+    /* fills parent but leaves 10px margin on left and right */
+    margin: 10px;
+    border-radius: 12px;
+    /* rounded edges */
+    background-color: #374549;
+    /* light gray background for visibility */
+}
