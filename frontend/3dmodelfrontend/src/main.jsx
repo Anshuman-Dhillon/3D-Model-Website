@@ -10,6 +10,8 @@ import SignUp from './pages/SignUp.jsx'
 import NotFound from './pages/NotFound.jsx'
 import Cart from './pages/Cart.jsx'
 import {createBrowserRouter, RouterProvider} from "react-router-dom"
+import Settings from './pages/Settings.jsx'
+import TransactionsPage from './pages/TransactionsPage.jsx'
 
 // Define the router
 const router = createBrowserRouter([
@@ -24,7 +26,9 @@ const router = createBrowserRouter([
       { path: 'profile', element: <ProfilePage /> }, //can use http://localhost:5173/profile
       { path: 'signup', element: <SignUp /> },
       { path: '*', element: <NotFound /> },
-      { path: 'cart', element: <Cart /> }
+      { path: 'cart', element: <Cart /> },
+      { path: 'settings', element: <Settings /> },
+      { path: 'transactions', element: <TransactionsPage /> }
     ],
   },
 ]);

@@ -13,6 +13,7 @@ function NavBar() {
         <div className="d-flex align-items-center">
           <a className="navbar-brand title me-4" href="#" style={{ whiteSpace: 'nowrap' }}>3DModeller</a>
         </div>
+
         <button
           className="navbar-toggler"
           type="button"
@@ -24,6 +25,7 @@ function NavBar() {
         >
           <span className="navbar-toggler-icon"></span>
         </button>
+
         <div className="collapse navbar-collapse" id="navbarSupportedContent">
           <ul className="navbar-nav ms-2 me-auto mb-2 mb-lg-0">
             <li className="nav-item active">
@@ -44,6 +46,16 @@ function NavBar() {
                 Marketplace <span className="visually-hidden">(current)</span>
               </button>
             </li>
+            <li className="nav-item active">
+              <button
+                className="nav-link nav_text btn btn-link p-0"
+                style={{ textDecoration: 'none' }}
+                onClick={() => navigate("/transactions")}
+              >
+                Orders & Transactions <span className="visually-hidden">(current)</span>
+              </button>
+            </li>
+
             {showProfileDropdown && (
               <li className="nav-item dropdown dropdown-hover nav_text">
                 <a
@@ -65,16 +77,18 @@ function NavBar() {
               </li>
             )}
           </ul>
-          <div className="d-flex align-items-center">
+
+          {/* Right-side buttons */}
+          <div className="d-flex align-items-center gap-2">
             <button
-              className="btn btn-outline-light me-2"
+              className="btn btn-outline-light"
               type="button"
               onClick={() => navigate("/login")}
             >
               Login
             </button>
             <button
-              className="btn btn-light me-3"
+              className="btn btn-light"
               type="button"
               onClick={() => navigate("/signup")}
             >
@@ -90,6 +104,19 @@ function NavBar() {
               <img 
                 src="https://cdnjs.cloudflare.com/ajax/libs/twemoji/14.0.2/svg/1f6d2.svg" 
                 alt="Cart" 
+                style={{ width: '32px', height: '32px' }}
+              />
+            </button>
+            <button
+              className="btn p-2"
+              type="button"
+              onClick={() => navigate("/settings")}
+              title="Settings"
+              style={{ border: 'none', background: 'transparent' }}
+            >
+              <img 
+                src="https://cdnjs.cloudflare.com/ajax/libs/twemoji/14.0.2/svg/2699.svg" 
+                alt="Settings" 
                 style={{ width: '32px', height: '32px' }}
               />
             </button>

@@ -1,0 +1,24 @@
+.transaction-card {
+    background: white;
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    max-width: 800px;
+}
+
+.transaction-header {
+    display: flex;
+    justify-content: space-between;
+    font-size: 1.1rem;
+    margin-bottom: 4px;
+}
+
+.transaction-price {
+    color: #28a745;
+}
+
+.transaction-date {
+    font-size: 0.85rem;
+    color: #888;
+}
