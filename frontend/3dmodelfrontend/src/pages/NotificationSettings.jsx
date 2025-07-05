@@ -1,5 +1,6 @@
 import React from 'react';
 import NotificationSettingsGrid from '../components/NotificationSettingsGrid';
+import Settings from './Settings';
 
 function NotificationSettings() {
     return (
@@ -9,4 +10,4 @@ function NotificationSettings() {
     );
 }
 
-export default NotificationsPage;
+export default NotificationSettings;

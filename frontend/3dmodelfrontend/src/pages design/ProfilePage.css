@@ -6,6 +6,8 @@
   align-items: center;
   justify-content: center;
   background: linear-gradient(135deg, #e0e7ff 0%, #f8fafc 100%);
+  padding-top: 75px;
+  padding-bottom: 75px;
 }
 
 .profile-form {
