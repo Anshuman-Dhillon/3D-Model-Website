@@ -12,6 +12,8 @@ import Cart from './pages/Cart.jsx'
 import {createBrowserRouter, RouterProvider} from "react-router-dom"
 import Settings from './pages/Settings.jsx'
 import TransactionsPage from './pages/TransactionsPage.jsx'
+import SupportPage from './pages/SupportPage.jsx'
+//import NotificationSettings from './pages/NotificationSettings.jsx'
 
 // Define the router
 const router = createBrowserRouter([
@@ -28,7 +30,9 @@ const router = createBrowserRouter([
       { path: '*', element: <NotFound /> },
       { path: 'cart', element: <Cart /> },
       { path: 'settings', element: <Settings /> },
-      { path: 'transactions', element: <TransactionsPage /> }
+      { path: 'transactions', element: <TransactionsPage /> },
+      { path: 'support', element: <SupportPage /> },
+      //{ path: 'settings/notifications', element: <NotificationSettings /> }
     ],
   },
 ]);

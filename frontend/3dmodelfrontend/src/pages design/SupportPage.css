@@ -1,0 +1,13 @@
+/* src/pages design/SupportPage.css */
+.support-wrapper .container {
+    max-width: 800px;
+    background: linear-gradient(to right, rgb(76, 76, 145), rgb(72, 111, 153));
+    margin-top: 100px;
+    margin-bottom: 100px;
+    border-radius: 12px;
+    color: white;
+}
+
+.support-wrapper ul li {
+    margin-bottom: 8px;
+}
