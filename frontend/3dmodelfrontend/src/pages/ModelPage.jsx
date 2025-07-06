@@ -64,6 +64,7 @@ function ModelPage() {
                             description={model.description}
                             price={model.price}
                             image={model.image}
+                            viewLink={"/modelview"}
                         />
                     ))}
                 </div>
