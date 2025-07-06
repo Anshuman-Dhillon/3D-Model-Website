@@ -80,6 +80,7 @@ function ItemGrid() {
                                 description={product.description}
                                 price={product.price}
                                 image={product.image}
+                                viewLink={"/modelview"}
                             />
                         </div>
                     ))}
