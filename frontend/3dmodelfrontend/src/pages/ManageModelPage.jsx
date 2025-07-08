@@ -1,4 +1,3 @@
-// src/pages/ManageModelPage.jsx
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import "../pages design/ModelPage.css"; // use the existing layout CSS
@@ -22,7 +21,7 @@ function ManageModelPage() {
         name: 'Sci-Fi Spaceship',
         description: 'High-res 3D spaceship model.',
         price: '19.99',
-        formats: '.obj, .fbx',
+        formats: 'OBJ',
         category: 'Sci-Fi'
       };
       setForm(fetched);
@@ -98,15 +97,21 @@ function ManageModelPage() {
             </div>
 
             <div className="mb-3">
-              <label className="form-label">File Formats</label>
-              <input
-                type="text"
+              <label className="form-label">File Format</label>
+              <select
                 name="formats"
-                className="form-control"
+                className="form-select"
                 value={form.formats}
                 onChange={handleChange}
                 required
-              />
+              >
+                <option value="" disabled>Select a file format</option>
+                <option value="OBJ">OBJ</option>
+                <option value="FBX">FBX</option>
+                <option value="STL">STL</option>
+                <option value="GLTF">GLTF</option>
+                <option value="USDZ">USDZ</option>
+              </select>
             </div>
 
             <div className="mb-3">
