@@ -71,10 +71,12 @@ nav {
   left: 0;
 }
 
-/* Fix: background and padding for collapsed navbar on small screens */
-.navbar-collapse.show {
-  background-color: #303b62;
-  /* same dark blue as gradient top */
-  border-radius: 0 0 12px 12px;
-  padding: 10px 15px;
+/* Fix: background and padding for collapsed navbar on small screens only */
+@media (max-width: 991.98px) {
+  .navbar-collapse.show {
+    background-color: #303b62;
+    /* same dark blue as gradient top */
+    border-radius: 0 0 12px 12px;
+    padding: 10px 15px;
+  }
 }
