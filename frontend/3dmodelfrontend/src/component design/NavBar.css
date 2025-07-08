@@ -1,43 +1,40 @@
 nav {
-    height: 80px;
-    font-size: 1.2rem;
-    background: linear-gradient(to right, rgb(5, 156, 237), #70b7e7);
-    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2);
+  height: 80px;
+  font-size: 1.2rem;
+  background: linear-gradient(to right, rgb(5, 156, 237), #70b7e7);
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2);
 }
 
 .secondary_nav {
-    height: 80px;
-    font-size: 1.2rem;
-    background: linear-gradient(to right, rgb(129, 195, 229), #71b9e8);
+  height: 80px;
+  font-size: 1.2rem;
+  background: linear-gradient(to right, rgb(129, 195, 229), #71b9e8);
 }
 
 .search_button {
-    background-color: rgb(18, 185, 194);
+  background-color: rgb(18, 185, 194);
 }
 
 .nav_text {
-    color: aliceblue;
+  color: aliceblue;
 }
 
 .title {
-    font-size: 1.7rem;
+  font-size: 1.7rem;
 }
 
 .dropdown-menu {
-    transition: opacity 0.2s ease;
-    pointer-events: auto;
+  transition: opacity 0.2s ease;
+  pointer-events: auto;
 }
 
 /* dropdown-hover behavior */
 .dropdown-hover:hover .dropdown-menu {
-    display: block;
-    margin-top: 0;
-    /* Optional: aligns menu with parent item */
+  display: block;
+  margin-top: 0;
 }
 
-/*
-  Custom top-to-bottom gradient for navbar: dark blue to deep space blue
-*/
+/* Custom top-to-bottom gradient for navbar: dark blue to deep space blue */
 .custom-navbar-gradient {
   background: linear-gradient(to bottom, #303b62 0%, #070b1a 100%) !important;
   border-bottom: 1px solid rgba(0, 0, 0, 0.485);
@@ -65,11 +62,19 @@ nav {
   width: 0%;
   height: 2px;
   background: #fff;
-  transition: width 0.3s cubic-bezier(0.4,0,0.2,1), left 0.3s cubic-bezier(0.4,0,0.2,1);
+  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1), left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .nav-link.nav_text:hover::after,
 .nav-link.nav_text:focus::after {
   width: 100%;
   left: 0;
+}
+
+/* Fix: background and padding for collapsed navbar on small screens */
+.navbar-collapse.show {
+  background-color: #303b62;
+  /* same dark blue as gradient top */
+  border-radius: 0 0 12px 12px;
+  padding: 10px 15px;
 }
