@@ -3,7 +3,7 @@ import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import "../component design/ModelItem.css";
 import { useNavigate } from 'react-router-dom';
 
-function ModelItem({ name, description, price, image, viewLink }) {
+function ModelItem({ name, description, price, image, viewLink, actions = ["Add to Cart"] }) {
     const navigate = useNavigate();
     const [hover, setHover] = useState(false); // For title hover color
 
@@ -67,32 +67,37 @@ function ModelItem({ name, description, price, image, viewLink }) {
                     </div>
                 </div>
 
-                <div className="mt-auto">
-                    <button
-                        className="btn w-100"
-                        style={{
-                            borderRadius: '8px',
-                            border: '1px solid black',
-                            color: 'black',
-                            backgroundColor: 'transparent',
-                            transition: 'background-color 0.3s ease, color 0.3s ease',
-                        }}
-                        onMouseEnter={e => {
-                            e.currentTarget.style.backgroundColor = 'black';
-                            e.currentTarget.style.color = 'white';
-                        }}
-                        onMouseLeave={e => {
-                            e.currentTarget.style.backgroundColor = 'transparent';
-                            e.currentTarget.style.color = 'black';
-                        }}
-                        onClick={(e) => {
-                            e.stopPropagation(); // Prevents parent div click
-                            // Add to cart logic here
-                        }}
-                    >
-                        Add to Cart
-                    </button>
-                </div>
+                <div className="mt-auto d-grid gap-2">
+    {actions.map((action, index) => (
+        <button
+            key={index}
+            className="btn w-100"
+            style={{
+                borderRadius: '8px',
+                border: '1px solid black',
+                color: 'black',
+                backgroundColor: 'transparent',
+                transition: 'background-color 0.3s ease, color 0.3s ease',
+            }}
+            onMouseEnter={e => {
+                e.currentTarget.style.backgroundColor = 'black';
+                e.currentTarget.style.color = 'white';
+            }}
+            onMouseLeave={e => {
+                e.currentTarget.style.backgroundColor = 'transparent';
+                e.currentTarget.style.color = 'black';
+            }}
+            onClick={(e) => {
+                e.stopPropagation(); // Prevents card click
+                console.log(`${action} clicked for ${name}`);
+                // TODO: add logic per action
+            }}
+        >
+            {action}
+        </button>
+    ))}
+</div>
+
             </div>
         </div>
     );

@@ -15,6 +15,7 @@ import TransactionsPage from './pages/TransactionsPage.jsx'
 import SupportPage from './pages/SupportPage.jsx'
 import NotificationSettings from "./pages/NotificationSettings.jsx"
 import ModelPage from './pages/ModelPage.jsx'
+import EditModelsPage from './pages/EditModelsPage.jsx'
 
 // Define the router
 const router = createBrowserRouter([
@@ -34,7 +35,8 @@ const router = createBrowserRouter([
       { path: 'transactions', element: <TransactionsPage /> },
       { path: 'support', element: <SupportPage /> },
       { path: 'settings/notifications', element: <NotificationSettings /> },
-      { path: 'modelview', element: <ModelPage /> }
+      { path: 'modelview', element: <ModelPage /> },
+      { path: 'mymodels', element: <EditModelsPage /> }
     ],
   },
 ]);

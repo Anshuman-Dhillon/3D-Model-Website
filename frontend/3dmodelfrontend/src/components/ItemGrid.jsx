@@ -2,7 +2,7 @@ import React from 'react';
 import ModelItem from './ModelItem';  
 import "../component design/ItemGrid.css"; 
 
-function ItemGrid() {
+function ItemGrid({actions = ["Add to Cart"]}) {
     const products = [
         {
             id: 1,
@@ -81,6 +81,7 @@ function ItemGrid() {
                                 price={product.price}
                                 image={product.image}
                                 viewLink={"/modelview"}
+                                actions={actions}
                             />
                         </div>
                     ))}
