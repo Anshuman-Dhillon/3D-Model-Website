@@ -46,6 +46,7 @@ function ModelPage() {
                     </p>
                     <ul>
                         <li><strong>Price:</strong> $19.99</li>
+                        <li><strong>Category:</strong> Adventure</li>
                         <li><strong>Uploader:</strong> Armaan Bhatti</li>
                         <li><strong>Formats:</strong> .obj, .fbx, .gltf</li>
                     </ul>
