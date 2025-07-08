@@ -2,6 +2,7 @@ import React from 'react';
 import "../component design/NavBar.css";
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import { useNavigate } from "react-router-dom";
+import profilepic from "../assets/react.svg"
 
 function NavBar() {
   const navigate = useNavigate();
@@ -112,8 +113,9 @@ function NavBar() {
               type="button"
               onClick={() => navigate("/settings")}
               title="Settings"
-              style={{ border: 'none', background: 'transparent' }}
+              style={{ borderColor: "#496ecc", background: 'transparent' }}
             >
+              <img src={profilepic} alt="Icon" width="40" height="40" style={{paddingRight: "15px"}}/>
               <img 
                 src="https://cdnjs.cloudflare.com/ajax/libs/twemoji/14.0.2/svg/2699.svg" 
                 alt="Settings" 
