@@ -22,7 +22,7 @@ function ProfilePage() {
 
     return (
         <div className="profile-page-container">
-            <h2 style={{marginBottom: "20px"}}>Profile Settings</h2>
+            <h2 style={{ marginBottom: "20px" }}>Profile Settings</h2>
             <form className="profile-form" onSubmit={handleSubmit}>
                 <label htmlFor="username">Username:</label>
                 <input
@@ -51,6 +51,16 @@ function ProfilePage() {
                     name="password"
                     value={form.password}
                     onChange={handleChange}
+                    required
+                />
+
+                <label htmlFor="profilepicinput">New Picture:</label>
+                <input
+                    type="file"
+                    id="profilepicinput"
+                    name="profilepicinput"
+                    accept="image/*"
+                    capture="environment"
                     required
                 />
 
