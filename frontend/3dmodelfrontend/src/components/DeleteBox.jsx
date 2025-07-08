@@ -1,10 +1,9 @@
 import React from 'react';
+import MessageBox from './MessageBox';
 
 function DeleteBox() {
     return (
-        <div>
-            
-        </div>
+        <MessageBox/>
     );
 }
 
