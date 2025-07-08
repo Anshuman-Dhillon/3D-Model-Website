@@ -27,7 +27,7 @@ function ModelItem({ name, description, price, image, viewLink, actions = ["Add 
             setShowMessage(true);
         },
         "Edit": () => {
-            navigate('/editmodel');
+            navigate('/managemodel/1');
         }
     };
 

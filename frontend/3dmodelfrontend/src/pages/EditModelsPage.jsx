@@ -1,7 +1,9 @@
 import React, { useRef, useEffect, useState } from 'react';
 import ItemGrid from '../components/ItemGrid';
+import { Navigate, useNavigate } from 'react-router-dom';
 
 function EditModelsPage() {
+    const navigate = useNavigate();
     const containerRef = useRef(null);
     const [atBottom, setAtBottom] = useState(false);
 
@@ -33,7 +35,7 @@ function EditModelsPage() {
 
                     {/* Floating Add New Model button */}
                     <button
-  onClick={() => console.log("Add New Model")}
+  onClick={() => navigate("/managemodel")}
   className="btn"
   style={{
     position: 'fixed',

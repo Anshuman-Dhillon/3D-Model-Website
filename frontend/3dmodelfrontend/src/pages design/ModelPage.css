@@ -94,3 +94,13 @@
     font-size: 16px;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
+
+/* Add to ModelPage.css (optional improvement for form spacing) */
+.right-box .form-label {
+    font-weight: 600;
+    margin-bottom: 6px;
+}
+
+.right-box .form-control {
+    margin-bottom: 16px;
+}

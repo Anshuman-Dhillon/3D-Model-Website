@@ -1,0 +1,9 @@
+/* Add to ModelPage.css (optional improvement for form spacing) */
+.right-box .form-label {
+    font-weight: 600;
+    margin-bottom: 6px;
+}
+
+.right-box .form-control {
+    margin-bottom: 16px;
+}
