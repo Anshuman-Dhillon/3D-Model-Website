@@ -46,6 +46,7 @@ function Cart() {
             minHeight: '100vh', 
             padding: '40px',
             display: 'flex',
+            maxWidth: "100%",
             justifyContent: 'center'
         }}>
             {}
