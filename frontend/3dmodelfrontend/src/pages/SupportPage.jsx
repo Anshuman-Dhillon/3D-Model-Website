@@ -13,7 +13,7 @@ function SupportPage() {
                     <div className="col-md-6 mb-4">
                         <h5>Support Contacts</h5>
                         <ul className="list-unstyled">
-                            <li>Email 1: armaanbhatti973@gmail.com</li>
+                            <li>Email 1: armaanbhatti972@gmail.com</li>
                             <li>Email 2: billing@3dmodeller.com</li>
                             <li>Email 3: help@3dmodeller.com</li>
                         </ul>
