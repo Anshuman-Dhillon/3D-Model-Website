@@ -10,14 +10,14 @@ function Cart() {
         },
         {
             id: 2,
-            name: "Game Name 2", 
+            name: "Game Name 2",
             image: "https://via.placeholder.com/150x100/e74c3c/ffffff?text=Game+2",
             cost: 39.99
         },
         {
             id: 3,
             name: "Game Name 3",
-            image: "https://via.placeholder.com/150x100/2ecc71/ffffff?text=Game+3", 
+            image: "https://via.placeholder.com/150x100/2ecc71/ffffff?text=Game+3",
             cost: 19.99
         }
     ]);
@@ -41,38 +41,38 @@ function Cart() {
     };
 
     return (
-        <div style={{ 
-            backgroundImage: 'linear-gradient(to right, rgb(34, 60, 79), rgb(35, 48, 88))', 
-            minHeight: '100vh', 
-            padding: '40px',
+        <div style={{
+            backgroundImage: 'linear-gradient(to right, rgb(34, 60, 79), rgb(35, 48, 88))',
+            minHeight: '100vh',
+            padding: '40px 20px',
             display: 'flex',
-            maxWidth: "100%",
-            justifyContent: 'center'
+            justifyContent: 'center',
+            boxSizing: 'border-box',
+            overflowX: 'hidden'
         }}>
-            {}
-            <div style={{ 
-                width: '1200px', 
-                maxWidth: '100%',
+            <div style={{
+                width: '100%',
+                maxWidth: '1200px',
                 display: 'flex',
-                gap: '30px'
+                flexWrap: 'wrap',
+                gap: '30px',
+                boxSizing: 'border-box'
             }}>
-                {}
-                <div style={{ width: '750px', flexShrink: 0 }}>
-                    {/* Cart Header */}
-                    <div style={{ 
-                        display: 'flex', 
-                        justifyContent: 'space-between', 
-                        alignItems: 'center', 
-                        marginBottom: '30px' 
+                <div style={{ width: '100%', maxWidth: '750px', flexGrow: 1 }}>
+                    <div style={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        marginBottom: '30px'
                     }}>
-                        <div style={{ 
+                        <div style={{
                             color: 'white',
                             fontSize: '24px',
                             fontWeight: 'bold'
                         }}>
                             My Cart
                         </div>
-                        <button 
+                        <button
                             onClick={addTestItem}
                             style={{
                                 backgroundColor: '#358278',
@@ -87,28 +87,27 @@ function Cart() {
                         </button>
                     </div>
 
-                    {/* Cart Items Container */}
-                    <div style={{ 
-                        maxHeight: '80vh', 
+                    <div style={{
+                        maxHeight: '80vh',
                         overflowY: 'auto',
                         paddingRight: '15px'
                     }}>
                         {cartItems.map((item) => (
-                            <div 
+                            <div
                                 key={item.id}
-                                style={{ 
+                                style={{
                                     backgroundImage: 'linear-gradient(to right,rgb(62, 65, 81),rgb(35, 61, 77))',
                                     borderRadius: '12px',
                                     border: '1px solid #3A3A4A',
                                     padding: '20px',
                                     marginBottom: '20px',
                                     display: 'flex',
+                                    flexDirection: 'row',
                                     alignItems: 'center',
                                     minHeight: '140px'
                                 }}
                             >
-                                {/* Image - Fixed size */}
-                                <div style={{ 
+                                <div style={{
                                     width: '180px',
                                     height: '120px',
                                     backgroundColor: '#3A3A4A',
@@ -118,15 +117,13 @@ function Cart() {
                                     backgroundPosition: 'center',
                                     flexShrink: 0,
                                     marginRight: '30px'
-                                }}>
-                                </div>
+                                }} />
 
-                                {/* Details - Fixed width */}
-                                <div style={{ 
+                                <div style={{
                                     flex: 1,
                                     paddingRight: '20px'
                                 }}>
-                                    <div style={{ 
+                                    <div style={{
                                         color: 'white',
                                         fontSize: '20px',
                                         fontWeight: '500',
@@ -134,9 +131,9 @@ function Cart() {
                                     }}>
                                         {item.name}
                                     </div>
-                                    <div 
+                                    <div
                                         onClick={() => deleteItem(item.id)}
-                                        style={{ 
+                                        style={{
                                             cursor: 'pointer',
                                             width: '45px',
                                             height: '45px',
@@ -147,21 +144,18 @@ function Cart() {
                                             borderRadius: '8px',
                                             transition: 'opacity 0.2s'
                                         }}
-                                        onMouseOver={(e) => e.target.closest('div').style.opacity = '0.8'}
-                                        onMouseOut={(e) => e.target.closest('div').style.opacity = '1'}
+                                        onMouseOver={(e) => e.currentTarget.style.opacity = '0.8'}
+                                        onMouseOut={(e) => e.currentTarget.style.opacity = '1'}
                                     >
-                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                            <path d="M3 6h18l-1.5 14H4.5L3 6z" fill="white" stroke="white" strokeWidth="1"/>
-                                            <path d="" stroke="white" strokeWidth="1" fill="none"/>
-                                            <path d="" stroke="#dc3545" strokeWidth="1"/>
-                                            <path d="" stroke="#dc3545" strokeWidth="1"/>
-                                            <path d="" stroke="white" strokeWidth="1"/>
+                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                             xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M3 6h18l-1.5 14H4.5L3 6z" fill="white" stroke="white"
+                                                  strokeWidth="1"/>
                                         </svg>
                                     </div>
                                 </div>
 
-                                {/* Cost - Fixed width */}
-                                <div style={{ 
+                                <div style={{
                                     width: '100px',
                                     textAlign: 'center',
                                     color: '#358278',
@@ -175,18 +169,15 @@ function Cart() {
                     </div>
                 </div>
 
-                {/* Order Summary (Fixed width) */}
-                <div style={{ width: '420px', flexShrink: 0 }}>
+                <div style={{ width: '100%', maxWidth: '420px', flexGrow: 1 }}>
                     <div style={{ position: 'sticky', top: '20px' }}>
-                        {/* Order Summary Container */}
-                        <div style={{ 
+                        <div style={{
                             backgroundColor: '#1b283d',
                             borderRadius: '12px',
                             border: '1px solid #3A3A4A',
                             padding: '30px'
                         }}>
-                            {/* Order Summary Title */}
-                            <div style={{ 
+                            <div style={{
                                 color: 'white',
                                 fontSize: '22px',
                                 fontWeight: 'bold',
@@ -198,9 +189,8 @@ function Cart() {
                                 Order Summary
                             </div>
 
-                            {/* Items Count */}
-                            <div style={{ 
-                                display: 'flex', 
+                            <div style={{
+                                display: 'flex',
                                 justifyContent: 'space-between',
                                 marginBottom: '15px'
                             }}>
@@ -212,9 +202,8 @@ function Cart() {
                                 </span>
                             </div>
 
-                            {/* Total Section */}
-                            <div style={{ 
-                                display: 'flex', 
+                            <div style={{
+                                display: 'flex',
                                 justifyContent: 'space-between',
                                 borderTop: '1px solid #3A3A4A',
                                 paddingTop: '15px',
@@ -228,9 +217,8 @@ function Cart() {
                                 </span>
                             </div>
 
-                            {/* Payment Buttons */}
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
-                                <button style={{ 
+                                <button style={{
                                     backgroundColor: '#03a63f',
                                     border: '2px solid #03a63f',
                                     color: 'white',
@@ -242,13 +230,13 @@ function Cart() {
                                     cursor: 'pointer',
                                     transition: 'all 0.2s'
                                 }}
-                                onMouseOver={(e) => e.target.style.backgroundColor = '#4CAF50'}
-                                onMouseOut={(e) => e.target.style.backgroundColor = '#03a63f'}
+                                        onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#4CAF50'}
+                                        onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#03a63f'}
                                 >
                                     💳 PAYPAL
                                 </button>
 
-                                <button style={{ 
+                                <button style={{
                                     backgroundColor: '#0272c2',
                                     border: '2px solid #0272c2',
                                     color: 'white',
@@ -260,8 +248,8 @@ function Cart() {
                                     cursor: 'pointer',
                                     transition: 'all 0.2s'
                                 }}
-                                onMouseOver={(e) => e.target.style.backgroundColor = '#4C63D2'}
-                                onMouseOut={(e) => e.target.style.backgroundColor = '#0272c2'}
+                                        onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#4C63D2'}
+                                        onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#0272c2'}
                                 >
                                     🏪 GOOGLE PAY
                                 </button>
