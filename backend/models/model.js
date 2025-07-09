@@ -1,5 +1,7 @@
 import mongoose from "mongoose";
 
+//This is supposed to store everything about the listing, including info 
+//about the file of the 3d model, name, description, etc.
 export const modelSchema = new mongoose.Schema(
   {
     name: {
@@ -8,6 +10,14 @@ export const modelSchema = new mongoose.Schema(
       unique: true,
     },
     description: {
+      type: String,
+      required: true,
+    },
+    category: {
+      type: String,
+      required: true,
+    },
+    format: {
       type: String,
       required: true,
     },
