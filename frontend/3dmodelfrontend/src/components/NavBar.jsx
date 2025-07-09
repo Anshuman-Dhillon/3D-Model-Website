@@ -12,7 +12,7 @@ function NavBar() {
     <>
       <nav className="navbar navbar-expand-lg navbar-dark custom-navbar-gradient px-3">
         <div className="d-flex align-items-center">
-          <a className="navbar-brand title me-4" href="#" style={{ whiteSpace: 'nowrap' }}>3DModeller</a>
+          <a className="navbar-brand title me-4" style={{ whiteSpace: 'nowrap' }} onClick={() => navigate("/home")}>3DModeller</a>
         </div>
 
         <button

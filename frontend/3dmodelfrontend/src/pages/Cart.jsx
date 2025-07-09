@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 
+let count = 4;
+
 function Cart() {
     const [cartItems, setCartItems] = useState([
         {
@@ -24,11 +26,12 @@ function Cart() {
 
     const addTestItem = () => {
         const newItem = {
-            id: cartItems.length + 1,
+            id: count,
             name: `Game Name ${cartItems.length + 1}`,
             image: `https://via.placeholder.com/150x100/9b59b6/ffffff?text=Game+${cartItems.length + 1}`,
             cost: Math.floor(Math.random() * 50) + 10
         };
+        count++;
         setCartItems([...cartItems, newItem]);
     };
 
