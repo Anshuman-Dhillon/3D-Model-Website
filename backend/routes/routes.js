@@ -1,5 +1,10 @@
 import express from "express"
-import { getAllModels, getModelById, createModel, updateModel, deleteModel, getAllUsers, getUserById, createUser, updateUser, deleteUser, addCart, removeCart, addTransaction, removeTransaction, transportModel } from "../controllers/controllers.js";
+import { addCart, removeCart, addTransaction, removeTransaction, transportModel } from "../controllers/userFunctions.js";
+import { getAllModels, getModelById, createModel, updateModel, deleteModel} from "../controllers/modelFunctions.js"
+import {getAllUsers, getUserById, updateUser, deleteUser} from "../controllers/userHelpers.js"
+import {createUser, signUpUser} from "../controllers/userSignUp.js"
+import { logInUser } from "../controllers/userLogIn.js";
+
 
 const router = express.Router();
 
@@ -13,7 +18,7 @@ router.put("/models/:id", updateModel);
 
 router.delete("/models/:id", deleteModel);
 
-// User routes
+// User routes for all users (Generic)
 router.get("/users", getAllUsers);
 router.get("/users/:userid", getUserById);
 
@@ -23,11 +28,14 @@ router.put("/users/:userid", updateUser);
 
 router.delete("/users/:userid", deleteUser);
 
-// User model routes
-router.get("/users/add/:id", addCart);
-router.get("/users/add/transaction/:id", addTransaction);
+// Signed in user routes
 
+// Cart related routes
+router.get("/users/add/:username", addCart);
 router.delete("/users/remove/:id", removeCart);
-router.delete("/users/remove/transaction/:id", removeTransaction);
+
+// transaction related routes
+router.get("/users/add/transaction/:username", addTransaction);
+router.delete("/users/remove/transaction/:username", removeTransaction);
 
 export default router;

@@ -9,6 +9,11 @@ export const modelSchema = new mongoose.Schema(
       required: true,
       unique: true,
     },
+    authType: {
+      type: String,
+      required: true,
+      unique: true,
+    },
     description: {
       type: String,
       required: true,
