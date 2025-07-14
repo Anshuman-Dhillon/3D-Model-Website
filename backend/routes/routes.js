@@ -2,7 +2,7 @@ import express from "express"
 import { addCart, removeCart, addTransaction, removeTransaction, transportModel } from "../controllers/userFunctions.js";
 import { getAllModels, getModelById, createModel, updateModel, deleteModel} from "../controllers/modelFunctions.js"
 import {getAllUsers, getUserById, updateUser, deleteUser} from "../controllers/userHelpers.js"
-import {createUser, signUpUser} from "../controllers/userSignUp.js"
+import {createUser} from "../controllers/userSignUp.js"
 import { logInUser } from "../controllers/userLogIn.js";
 
 
@@ -20,12 +20,15 @@ router.delete("/models/:id", deleteModel);
 
 // User routes for all users (Generic)
 router.get("/users", getAllUsers);
-router.get("/users/:userid", getUserById);
+router.get("/users/:username", getUserById);
 
+//Sign In user
 router.post("/users", createUser);
 
-router.put("/users/:userid", updateUser);
+//Update User info
+router.put("/users/:username/:password/:confirmpassword", updateUser);
 
+//delete user
 router.delete("/users/:userid", deleteUser);
 
 // Signed in user routes
