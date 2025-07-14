@@ -34,14 +34,21 @@ export async function logInUser(req, res) {
             throw new Error("Invalid Password.");
         }
         //log in user if success, otherwise raise the appropriate error
+
+        const payload = { id: user._id, username: user.username };
         //create the token
-        const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '15s'})
-        const refreshToken = jwt.sign(user, process.env.REFRESH_SECRET_TOKEN)
-        
+        const accessToken = jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '15m' });
+        const refreshToken = jwt.sign(payload, process.env.REFRESH_SECRET_TOKEN, { expiresIn: '1h' });
+
         //Save the refresh token ig
+        user.refreshToken = refreshToken;
+        await user.save();
         
-        
-        res.status(200).json({ message: "Login successful", user: { username: user.username } , accessToken: accessToken, refreshToken: refreshToken});
+        res.status(200).json({
+                    message: "Login successful",
+                    user: { username: user.name, email: user.email_address },
+                    accessToken: accessToken
+                });    
     } catch (error) {
         console.error("Error creating user:", error);
         res.status(500).json({ message: "Error creating user", error: error.message });

@@ -10,7 +10,11 @@ const userSchema = new mongoose.Schema(
       min: 0,
       default: []
     },
-
+    refreshToken: {
+      type: String,
+      required: true,
+      default: ''
+    },
     orders: {
       total_cost: {
         type: Number,
