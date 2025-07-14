@@ -22,8 +22,11 @@ router.delete("/models/:id", deleteModel);
 router.get("/users", getAllUsers);
 router.get("/users/:username", getUserById);
 
-//Sign In user
+//Sign Up user
 router.post("/users", createUser);
+
+//Log In user
+router.post("/users/:username/:email/:password", logInUser)
 
 //Update User info
 router.put("/users/:username/:password/:confirmpassword", updateUser);

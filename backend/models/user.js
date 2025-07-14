@@ -1,12 +1,14 @@
 import mongoose from "mongoose";
 import { modelSchema } from "./model.js";
+import { transactionSchema } from "./transaction.js";
 
 const userSchema = new mongoose.Schema(
   {
     transaction_history: {
-      type: Number,
+      type: [transactionSchema],
       required: true,
       min: 0,
+      default: []
     },
 
     orders: {
