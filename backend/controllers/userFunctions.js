@@ -192,3 +192,12 @@ export async function notificationChange(req, res) {
         res.status(500).json({ message: "Error changing settings", error: error.message });
     }
 }
+
+export async function getAllCart(req, res) {
+    try {
+
+    } catch (error) {
+        console.error("Error changing settings:", error);
+        res.status(500).json({ message: "Error changing settings", error: error.message });
+    }
+}
