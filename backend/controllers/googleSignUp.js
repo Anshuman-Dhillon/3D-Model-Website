@@ -8,6 +8,7 @@ import dotenv from "dotenv"
 // Load environment variables from .env file
 dotenv.config()
 // in the form, we have the user name, password and confirm password boxes
+
 //Route: /users/google/:username/:password/:confirmpassword
 
 export async function createUser(req, res) {

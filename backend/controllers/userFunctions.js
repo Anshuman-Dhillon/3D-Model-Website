@@ -156,10 +156,14 @@ export async function editModel(req, res) {
 
 
 //Settings
-// Route: /users/settings/settings/:username/
-export async function notificationChange(req, res) {
+// Route: /users/settings/settings/:username/:currentpassword
+export async function personalInfoChange(req, res) {
     try {
         const data = req.query
+
+        //first verify the current password, if it exists
+
+        //now make the changes
         const user = await User.findOne({"username": req.params.username})
         for (const key in data) {
             if (user.settings.personal_info.key in user) user.settings.personal_info.key = data[key]
