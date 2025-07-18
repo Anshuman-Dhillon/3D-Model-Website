@@ -4,6 +4,8 @@ import { getAllUsers, getUserById, updateUser, deleteUser } from "./controllers.
 import authenticated from "../middleware/authentication.js"
 import bcrypt from "bcrypt"
 import dotenv from "dotenv"
+import jwt from 'jsonwebtoken';
+
 
 // Load environment variables from .env file
 dotenv.config()
@@ -38,11 +40,19 @@ export async function logInUser(req, res) {
         const payload = { id: user._id, username: user.username };
         //create the token
         const accessToken = jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '15m' });
-        const refreshToken = jwt.sign(payload, process.env.REFRESH_SECRET_TOKEN, { expiresIn: '1h' });
+        const refreshToken = jwt.sign(payload, process.env.REFRESH_SECRET_TOKEN, { expiresIn: '3h' });
 
         //Save the refresh token ig
         user.refreshToken = refreshToken;
         await user.save();
+
+        res.cookie('refreshToken', refreshToken, {
+        httpOnly: true,
+        secure: true,       // set to true if using HTTPS
+        sameSite: 'Strict', // or 'Lax' depending on your needs
+        maxAge: 3 * 60 * 60 * 1000, // 3 hours in milliseconds
+        });
+
         
         res.status(200).json({
                     message: "Login successful",
@@ -50,7 +60,7 @@ export async function logInUser(req, res) {
                     accessToken: accessToken
                 });    
     } catch (error) {
-        console.error("Error creating user:", error);
-        res.status(500).json({ message: "Error creating user", error: error.message });
+        console.error("Error logging in user:", error);
+        res.status(500).json({ message: "Login failed", error: error.message });
     }
 }

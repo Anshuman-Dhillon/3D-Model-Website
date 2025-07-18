@@ -4,7 +4,7 @@ import "../component design/ModelItem.css";
 import { useNavigate } from 'react-router-dom';
 import MessageBox from './MessageBox'; // Ensure this exists
 
-function ModelItem({ name, description, price, image, viewLink, actions = ["Add to Cart"] }) {
+function ModelItem({ name, description, price, image, viewLink, actions = ["Add to Cart"], id = 1 }) {
     const navigate = useNavigate();
     const [hover, setHover] = useState(false);
     const [showMessage, setShowMessage] = useState(false);

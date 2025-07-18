@@ -43,6 +43,32 @@ const userSchema = new mongoose.Schema(
           type: [String],
           default: [],
         },
+        profile_picture: {
+          type: String,
+          default: "https://example.com/default-profile.png", // optional
+        },
+        notification_settings: {
+          email_notifications: {
+            type: Boolean,
+            required: true,
+            default: false
+          },
+          push_notifications: {
+            type: Boolean,
+            required: true,
+            default: false
+          },
+          sms_alerts: {
+            type: Boolean,
+            required: true,
+            default: false
+          },
+          newsletter_subscription: {
+            type: Boolean,
+            required: true,
+            default: false
+          }
+        }
       },
 
       personal_info: {
