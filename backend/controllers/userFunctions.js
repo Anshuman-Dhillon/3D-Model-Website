@@ -48,10 +48,15 @@ export async function removeCart(req, res) {
     }
 }
 
-//Route: /users/models/addtransaction/:username
+//Route: /users/models/addtransaction/:username/:modelid
 
 export async function addTransaction(req, res) {
     try {
+        const user = await User.find(req.params.username)
+        // const date = 
+        // const modelName = 
+        // const orderNumber = 
+        // const price =
 
         res.status(201).json({ message: "Added transaction" });
     } catch (error) {
