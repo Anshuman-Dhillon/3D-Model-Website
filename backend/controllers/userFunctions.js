@@ -157,12 +157,26 @@ export async function editModel(req, res) {
 
 //Settings
 // Route: /users/settings/settings/:username/
-export async function settingsChange(req, res) {
+export async function notificationChange(req, res) {
     try {
         const data = req.query
         const user = await User.findOne({"username": req.params.username})
         for (const key in data) {
-            if (user.key in user) user.key = data[key]
+            if (user.settings.personal_info.key in user) user.settings.personal_info.key = data[key]
+        }
+    } catch (error) {
+        console.error("Error changing settings:", error);
+        res.status(500).json({ message: "Error changing settings", error: error.message });
+    }
+}
+
+// Route: /users/settings/settings/:username/
+export async function notificationChange(req, res) {
+    try {
+        const data = req.query
+        const user = await User.findOne({"username": req.params.username})
+        for (const key in data) {
+            if (user.settings.notification_settings.key in user) user.settings.notification_settings.key = data[key]
         }
     } catch (error) {
         console.error("Error changing settings:", error);
