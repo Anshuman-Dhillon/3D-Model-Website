@@ -4,7 +4,7 @@ import authenticated from "../middleware/authentication.js"
 
 //Help functions for users
 
-//CRUD operations for users (GENERIC)
+//CRUD operations for users 
 export async function getAllUsers(req, res) {
     try {
         const users = await User.find({});
