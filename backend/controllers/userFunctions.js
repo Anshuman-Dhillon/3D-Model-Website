@@ -160,24 +160,35 @@ export async function editModel(req, res) {
 }
 
 
-//Settings
+// Settings
 // Route: /users/settings/settings/:username/:currentpassword
 export async function personalInfoChange(req, res) {
     try {
-        const data = req.query
+        const data = req.query;
+        const { username, currentpassword } = req.params;
 
-        //first verify the current password, if it exists
+        const user = await User.findOne({ "username": username });
 
-        //now make the changes
-        const user = await User.findOne({"username": req.params.username})
-        for (const key in data) {
-            if (user.settings.personal_info.key in user) user.settings.personal_info.key = data[key]
+        if (!user) return res.status(404).json({ message: "User not found" });
+
+        if (user.settings.personal_info.password !== currentpassword) {
+            return res.status(401).json({ message: "Incorrect current password" });
         }
+
+        for (const key in data) {
+            if (key in user.settings.personal_info) {
+                user.settings.personal_info[key] = data[key];
+            }
+        }
+
+        await user.save();
+        res.status(200).json({ message: "Personal info updated successfully" });
     } catch (error) {
         console.error("Error changing settings:", error);
         res.status(500).json({ message: "Error changing settings", error: error.message });
     }
 }
+
 
 // Route: /users/settings/settings/:username/
 export async function notificationChange(req, res) {
@@ -187,17 +198,31 @@ export async function notificationChange(req, res) {
         for (const key in data) {
             if (user.settings.notification_settings.key in user) user.settings.notification_settings.key = data[key]
         }
+        await user.save()
     } catch (error) {
         console.error("Error changing settings:", error);
         res.status(500).json({ message: "Error changing settings", error: error.message });
     }
 }
 
+
+// Route: /users/settings/settings/:username/
 export async function getAllCart(req, res) {
     try {
+        const { username } = req.params;
 
+        const user = await User.findOne({ "settings.personal_info.username": username });
+
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        const cart = user.orders.items;
+
+        res.status(200).json(cart);
     } catch (error) {
-        console.error("Error changing settings:", error);
-        res.status(500).json({ message: "Error changing settings", error: error.message });
+        console.error("Error retrieving cart:", error);
+        res.status(500).json({ message: "Error retrieving cart", error: error.message });
     }
 }
+
