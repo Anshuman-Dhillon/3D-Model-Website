@@ -1,12 +1,16 @@
 import express from "express"
-import { addCart, removeCart, addTransaction, removeTransaction, transportModel, editModel, userCreateModel, userGetAllModels } from "../controllers/userFunctions.js";
+import { addCart, removeCart, editModel, userCreateModel, userGetAllModels } from "../controllers/userFunctions.js";
+import { addTransaction, removeTransaction, transportModel } from "../controllers/payments.js";
 import { getAllModels, getModelById, createModel, updateModel, deleteModel} from "../controllers/modelFunctions.js"
 import {getAllUsers, getUserById, updateUser, deleteUser} from "../controllers/userHelpers.js"
 import {createUser} from "../controllers/userSignUp.js"
 import { logInUser } from "../controllers/userLogIn.js";
-
+import { authenticated } from "../middleware/authentication.js";
+import { googleLogInUser } from "../controllers/googleLogIn.js";
+import { googleSignUpUser } from "../controllers/googleSignUp.js";
 
 const router = express.Router();
+router.use(authenticated); //set up authenticated middleware for all routes
 
 // Model routes
 router.get("/models", getAllModels);
@@ -44,9 +48,10 @@ router.delete("/users/remove/:modelid/:username", removeCart);
 router.get("/users/add/transaction/:username", addTransaction);
 router.delete("/users/remove/transaction/:username", removeTransaction);
 
-//model upload/delete and other model methods
-router.get("/users/add/transaction/:username", addTransaction);
-router.delete("/users/remove/transaction/:username", removeTransaction);
+// Payment and Transaction routes
+router.post("/transactions/create/:username/:modelid", addTransaction);
+router.delete("/transactions/remove/:username/:transactionId", removeTransaction);
+router.post("/transactions/transport-model", transportModel);
 
 router.get("/users/models/editmodel/:username", editModel)
 router.get("/users/models/createmodel/:username", userCreateModel)

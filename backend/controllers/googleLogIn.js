@@ -13,7 +13,7 @@ dotenv.config()
 // in the form, we have the user name, and password boxes
 //Route: /users/google/:username/:email/:password
 
-export async function logInUser(req, res) {
+export async function googleLogInUser(req, res) {
     try {
         
           

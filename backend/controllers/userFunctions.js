@@ -41,54 +41,27 @@ export async function addCart(req, res) {
 
 export async function removeCart(req, res) {
     try {
-        res.status(200).json({ message: "Successfully removed model from Cart" });
+        const userId = req.params.id;
+        const modelId = req.params.modelId;
+
+        const updatedUser = await User.findByIdAndUpdate(
+            userId,
+            {
+                $pull: {
+                    "orders.items": { _id: modelId }
+                }
+            },
+            { new: true }
+        );
+
+        if (!updatedUser) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        res.status(200).json({ message: "Successfully removed model from cart" });
     } catch (error) {
-        res.status(500).json({ message: "Unable to remove model to cart", error: error.message });
-        console.error("Unable to remove model to cart", error);
-    }
-}
-
-//Route: /users/models/addtransaction/:username/:modelid
-
-export async function addTransaction(req, res) {
-    try {
-        const user = await User.find(req.params.username)
-        // const date = 
-        // const modelName = 
-        // const orderNumber = 
-        // const price =
-
-        res.status(201).json({ message: "Added transaction" });
-    } catch (error) {
-        res.status(500).json({ message: "Unable to remove model to cart", error: error.message });
-        console.error("Unable to remove model to cart", error);
-    }
-}
-
-//Warning: We may not allow user to do this
-
-//Route: /users/models/removetransaction/:username
-
-export async function removeTransaction(req, res) {
-    try {
-
-        res.status(200).json({ message: "Successfully removed model from Cart" });
-    } catch (error) {
-        res.status(500).json({ message: "Unable to remove transaction", error: error.message });
-        console.error("Unable to remove transaction", error);
-    }
-}
-
-//Transporting the models from seller to buyer
-
-//Route: /users/models/transportmodel
-
-export async function transportModel(req, res) {
-    try {
-
-    } catch (error) {
-        res.status(500).json({ message: "Unable to retrieve model, please try again", error: error.message });
-        console.error("Unable to retrieve model, please try again", error);
+        console.error("Error removing model from cart:", error);
+        res.status(500).json({ message: "Unable to remove model from cart", error: error.message });
     }
 }
 
@@ -107,17 +80,28 @@ export async function userGetAllModels(req, res) {
 }
 
 //Route: /users/models/createmodel/:username
-
 export async function userCreateModel(req, res) {
     try {
         const name = req.body.name || req.query.name;
         const description = req.body.description || req.query.description;
         const price = req.body.price || req.query.price;
 
+        // Input validation
+        if (!name || !description || !price) {
+            return res.status(400).json({ 
+                message: "Missing required fields", 
+                required: ["name", "description", "price"] 
+            });
+        }
+
+        if (isNaN(price) || price < 0) {
+            return res.status(400).json({ message: "Invalid price value" });
+        }
+
         const newModel = new Model({
             name,
             description,
-            price
+            price: Number(price)
         });
 
         const savedModel = await newModel.save();
@@ -128,7 +112,7 @@ export async function userCreateModel(req, res) {
     }
 }
 
-//Route: /users/models/editmodel/:username/modelid
+//Route: /users/models/editmodel/:username/modelId
 
 export async function editModel(req, res) {
     try {
@@ -169,10 +153,18 @@ export async function personalInfoChange(req, res) {
 
         const user = await User.findOne({ "username": username });
 
-        if (!user) return res.status(404).json({ message: "User not found" });
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
 
-        if (user.settings.personal_info.password !== currentpassword) {
+        const passwordMatch = await bcrypt.compare(currentpassword, user.settings.personal_info.password);
+        if (!passwordMatch) {
             return res.status(401).json({ message: "Incorrect current password" });
+        }
+
+        // If updating password, hash the new password
+        if (data.password) {
+            data.password = await bcrypt.hash(data.password, 10);
         }
 
         for (const key in data) {
@@ -193,12 +185,21 @@ export async function personalInfoChange(req, res) {
 // Route: /users/settings/settings/:username/
 export async function notificationChange(req, res) {
     try {
-        const data = req.query
-        const user = await User.findOne({"username": req.params.username})
-        for (const key in data) {
-            if (user.settings.notification_settings.key in user) user.settings.notification_settings.key = data[key]
+        const data = req.query;
+        const user = await User.findOne({"username": req.params.username});
+        
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
         }
-        await user.save()
+
+        for (const key in data) {
+            if (key in user.settings.notification_settings) {
+                user.settings.notification_settings[key] = data[key];
+            }
+        }
+        
+        await user.save();
+        res.status(200).json({ message: "Notification settings updated successfully" });
     } catch (error) {
         console.error("Error changing settings:", error);
         res.status(500).json({ message: "Error changing settings", error: error.message });

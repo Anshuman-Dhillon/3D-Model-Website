@@ -11,7 +11,7 @@ dotenv.config()
 
 //Route: /users/google/:username/:password/:confirmpassword
 
-export async function createUser(req, res) {
+export async function googleSignUpUser(req, res) {
     try {
         
         
