@@ -63,7 +63,7 @@ The frontend is built using **React** and **Vite**, leveraging **React Router** 
 ### Features
 
 - **Dynamic Routing**: React Router is used for routes like Home, Catalog, Login, and Profile.
-- **State Management**: React’s `useState` and `useEffect` hooks manage component state.
+- **State Management**: React's `useState` and `useEffect` hooks manage component state.
 - **Styling**: Custom CSS provides a consistent look and feel.
 
 ---
@@ -86,42 +86,34 @@ The backend is built using **Express.js**, with a modular structure:
 - **Cart Functionality**: Add/remove items from cart.
 - **Transaction Management**: Records purchases and provides history APIs.
 - **Database Integration**: MongoDB stores all core data.
----
-
-## Future Enhancements
-
-- **Advanced Search**: Add filters for model formats and categories.
-- **Payment Integration**: Add PayPal and Google Pay support.
-- **Notifications**: Real-time alerts for purchases and updates.
-- **Model Preview**: Enable 3D previews with WebGL or Three.js.
-- **Admin Panel**: Admin dashboard for user/model moderation.
 
 ---
 
 ## Project Structure
 
+```text
 3D-Model-Marketplace/
-├── client/ # Frontend (React + Vite)
-│ ├── public/
-│ ├── src/
-│ │ ├── components/ # Reusable React components (NavBar, SearchBar, etc.)
-│ │ ├── pages/ # Page-level components (Home, Login, Profile, etc.)
-│ │ ├── hooks/ # Custom React hooks
-│ │ ├── utils/ # Helper functions
-│ │ ├── App.jsx
-│ │ └── main.jsx
-│ ├── index.html
-│ └── vite.config.js
+├── client/                   # Frontend (React + Vite)
+│   ├── public/               # Public assets
+│   ├── src/                  # Source files
+│   │   ├── components/       # Reusable React components (NavBar, SearchBar, etc.)
+│   │   ├── pages/            # Page-level components (Home, Login, Profile, etc.)
+│   │   ├── hooks/            # Custom React hooks
+│   │   ├── utils/            # Helper functions
+│   │   ├── App.jsx
+│   │   └── main.jsx
+│   ├── index.html
+│   └── vite.config.js
 │
-├── server/ # Backend (Express.js)
-│ ├── controllers/ # Business logic (auth, model, transaction controllers)
-│ ├── middleware/ # Authentication, error handlers, rate limiters
-│ ├── models/ # Mongoose schemas for MongoDB
-│ ├── routes/ # API routes
-│ ├── utils/ # Utility functions (e.g. validators, formatters)
-│ ├── config/ # Environment and database config
-│ ├── server.js # Main server entry point
-│ └── .env
+├── server/                   # Backend (Express.js)
+│   ├── controllers/          # Business logic (auth, model, transaction controllers)
+│   ├── middleware/           # Authentication, error handlers, rate limiters
+│   ├── models/               # Mongoose schemas for MongoDB
+│   ├── routes/               # API routes
+│   ├── utils/                # Utility functions (e.g. validators, formatters)
+│   ├── config/               # Environment and database config
+│   ├── server.js             # Main server entry point
+│   └── .env
 │
 ├── package.json
 ├── README.md
