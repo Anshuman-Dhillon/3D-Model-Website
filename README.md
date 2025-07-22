@@ -86,6 +86,15 @@ The backend is built using **Express.js**, with a modular structure:
 - **Cart Functionality**: Add/remove items from cart.
 - **Transaction Management**: Records purchases and provides history APIs.
 - **Database Integration**: MongoDB stores all core data.
+---
+
+## Future Enhancements
+
+- **Advanced Search**: Add filters for model formats and categories.
+- **Payment Integration**: Add PayPal and Google Pay support.
+- **Notifications**: Real-time alerts for purchases and updates.
+- **Model Preview**: Enable 3D previews with WebGL or Three.js.
+- **Admin Panel**: Admin dashboard for user/model moderation.
 
 ---
 
