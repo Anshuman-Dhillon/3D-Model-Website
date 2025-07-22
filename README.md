@@ -13,7 +13,7 @@ A full-stack web application for buying, selling, and managing 3D models. The pr
 - [Frontend Implementation](#frontend-implementation)
 - [Backend Implementation](#backend-implementation)
 - [Project Structure](#project-structure)
-- [Future Enhancements](#future-enhancements)
+- [Future Improvements](#future-enhancements)
 
 ---
 
@@ -46,11 +46,8 @@ The 3D Model Marketplace is designed to allow users to browse, upload, purchase,
 
 ## Frontend Implementation
 
-### Architecture
 
 The frontend is built using **React** and **Vite**, leveraging **React Router** for navigation and **Bootstrap** for styling. It follows a component-based architecture, ensuring modularity and reusability.
-
-### Core Components
 
 - **NavBar**: Navigation links to Home, Marketplace, Cart, and Profile.
 - **ItemGrid**: Displays a grid of 3D models with options to add to cart or view details.
@@ -69,8 +66,6 @@ The frontend is built using **React** and **Vite**, leveraging **React Router** 
 ---
 
 ## Backend Implementation
-
-### Architecture
 
 The backend is built using **Express.js**, with a modular structure:
 
