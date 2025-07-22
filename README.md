@@ -100,3 +100,37 @@ The backend is built using **Express.js**, with a modular structure:
 
 ## Project Structure
 
+3D-Model-Marketplace/
+├── client/ # Frontend (React + Vite)
+│ ├── public/
+│ ├── src/
+│ │ ├── components/ # Reusable React components (NavBar, SearchBar, etc.)
+│ │ ├── pages/ # Page-level components (Home, Login, Profile, etc.)
+│ │ ├── hooks/ # Custom React hooks
+│ │ ├── utils/ # Helper functions
+│ │ ├── App.jsx
+│ │ └── main.jsx
+│ ├── index.html
+│ └── vite.config.js
+│
+├── server/ # Backend (Express.js)
+│ ├── controllers/ # Business logic (auth, model, transaction controllers)
+│ ├── middleware/ # Authentication, error handlers, rate limiters
+│ ├── models/ # Mongoose schemas for MongoDB
+│ ├── routes/ # API routes
+│ ├── utils/ # Utility functions (e.g. validators, formatters)
+│ ├── config/ # Environment and database config
+│ ├── server.js # Main server entry point
+│ └── .env
+│
+├── package.json
+├── README.md
+└── .gitignore
+
+## Future Enhancements
+
+- **Advanced Search**: Add filters for model formats, tags, and categories.
+- **Payment Integration**: Implement PayPal, Stripe, and Google Pay.
+- **Notifications**: Add real-time notifications using WebSockets.
+- **Model Preview**: Use Three.js or WebGL for real-time 3D previews.
+- **Admin Panel**: Provide an admin dashboard for user and model moderation.
