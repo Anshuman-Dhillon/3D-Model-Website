@@ -5,7 +5,7 @@ import { getAllModels, getModelById, createModel, updateModel, deleteModel} from
 import {getAllUsers, getUserById, updateUser, deleteUser} from "../controllers/userHelpers.js"
 import {createUser} from "../controllers/userSignUp.js"
 import { logInUser } from "../controllers/userLogIn.js";
-import { authenticated } from "../middleware/authentication.js";
+import authenticated from "../middleware/authentication.js";
 import { googleLogInUser } from "../controllers/googleLogIn.js";
 import { googleSignUpUser } from "../controllers/googleSignUp.js";
 
