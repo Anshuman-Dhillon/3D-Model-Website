@@ -1,5 +1,5 @@
 import express from "express"
-import { addCart, removeCart, editModel, userCreateModel, userGetAllModels, personalInfoChange } from "../controllers/userFunctions.js";
+import { addCart, removeCart, editModel, userCreateModel, userGetAllModels, personalInfoChange, notificationChange } from "../controllers/userFunctions.js";
 import { addTransaction, removeTransaction, transportModel } from "../controllers/payments.js";
 import { getAllModels, getModelById, createModel, updateModel, deleteModel} from "../controllers/modelFunctions.js"
 import {getAllUsers, getUserById, updateUser, deleteUser} from "../controllers/userHelpers.js"
