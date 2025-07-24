@@ -8,6 +8,9 @@ import dotenv from "dotenv";
 // Load environment variables from .env file
 dotenv.config();
 
+//Route: /users/signup/:email/:username/:password/:confirmpassword
+// This function handles user sign-up
+
 export async function createUser(req, res) {
   try {
     const { email, username, password, confirmPassword } = req.body;

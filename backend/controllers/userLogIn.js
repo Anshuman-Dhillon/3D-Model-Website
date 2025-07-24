@@ -11,7 +11,7 @@ import jwt from 'jsonwebtoken';
 dotenv.config()
 
 // in the form, we have the user name, and password boxes
-//Route: /users/:username/:email/:password
+//Route: /users/login/:username/:email/:password
 
 export async function logInUser(req, res) {
     try {

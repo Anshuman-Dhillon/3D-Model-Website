@@ -1,5 +1,5 @@
 import express from "express"
-import { addCart, removeCart, editModel, userCreateModel, userGetAllModels } from "../controllers/userFunctions.js";
+import { addCart, removeCart, editModel, userCreateModel, userGetAllModels, personalInfoChange } from "../controllers/userFunctions.js";
 import { addTransaction, removeTransaction, transportModel } from "../controllers/payments.js";
 import { getAllModels, getModelById, createModel, updateModel, deleteModel} from "../controllers/modelFunctions.js"
 import {getAllUsers, getUserById, updateUser, deleteUser} from "../controllers/userHelpers.js"
@@ -13,32 +13,32 @@ const router = express.Router();
 
 
 // Model routes
-router.get("/models", getAllModels);
-router.get("/models/:id", getModelById);
+router.get("/models/getallmodels", getAllModels);
+router.get("/models/getmodelbyid/:id", getModelById);
 
-router.post("/models", createModel);
+router.post("/models/createmodel/:name/:description/:price", createModel);
 
-router.put("/models/:id", updateModel);
+router.put("/models/updatemodel/:id", updateModel);
 
-router.delete("/models/:id", deleteModel);
+router.delete("/models/deletemodel/:id", deleteModel);
 
 // User routes for all users (Generic)
-router.get("/users", getAllUsers);
-router.get("/users/:username", getUserById);
+router.get("/users/getallusers", getAllUsers);
+router.get("/users/getuserbyid/:username", getUserById);
 
 //Sign Up user
-router.post("/users", createUser);
+router.post("/users/signup/:email/:username/:password/:confirmpassword", createUser);
 
 //Log In user
-router.post("/users/:username/:email/:password", logInUser)
+router.post("/users/login/:username/:email/:password", logInUser)
 
 router.use(authenticated); //set up authenticated middleware for all routes
 
 //Update User info
-router.put("/users/:username/:password/:confirmpassword", updateUser);
+router.put("/users/update/:username/:password/:confirmpassword", updateUser);
 
 //delete user
-router.delete("/users/:userid", deleteUser);
+router.delete("/users/delete/:userid", deleteUser);
 
 // Signed in user routes
 
@@ -58,5 +58,9 @@ router.post("/transactions/transport-model", transportModel);
 router.get("/users/models/editmodel/:username", editModel)
 router.get("/users/models/createmodel/:username", userCreateModel)
 router.get("/users/models/getallmodels/:username", userGetAllModels)
+
+//settings routes for users
+router.get("/users/settings/settings/:username/:currentpassword", personalInfoChange);
+router.get("/users/settings/notifications/:username", notificationChange);
 
 export default router;

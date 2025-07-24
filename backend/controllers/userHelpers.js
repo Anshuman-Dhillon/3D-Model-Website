@@ -15,6 +15,8 @@ export async function getAllUsers(req, res) {
     }
 }
 
+//Route: /users/getuserbyid/:id
+// This function retrieves a user by their ID
 export async function getUserById(req, res) {
     try {
         const user = await User.findById(req.params.id);
@@ -30,6 +32,8 @@ export async function getUserById(req, res) {
     }
 }
 
+//Route: /users/updateuser/:id
+// This function updates a user's information
 export async function updateUser(req, res) {
     try {
         const updatedUser = await User.findByIdAndUpdate(

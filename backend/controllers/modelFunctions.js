@@ -2,6 +2,9 @@ import Model from "../models/model.js";
 import User from "../models/user.js";
 
 //Code for CRUD operations on Models
+
+//Route: /models/getallmodels
+// This function retrieves all models from the database
 export async function getAllModels(req, res) {
     try {
         const models = await Model.find({});
@@ -12,6 +15,8 @@ export async function getAllModels(req, res) {
     }
 }
 
+//Route: /models/createmodel/:name/:description/:price
+// This function creates a new model in the database
 export async function createModel(req, res) {
     try {
         const name = req.body.name || req.query.name;
@@ -32,11 +37,23 @@ export async function createModel(req, res) {
     }
 }
 
+//Route: /models/getmodelbyid/:id
+// This function retrieves a model by its ID
 export async function getModelById(req, res) {
     const modelId = req.params.id;
-    res.status(200).send(`Get model with ID: ${modelId}`);
+    try {
+        const model = await Model.findById(modelId);
+        if (!model) {
+            return res.status(404).json({ message: "Model not found" });
+        }
+        res.status(200).json(model);
+    } catch (error) {
+        console.error("Error fetching model:", error);
+        res.status(500).json({ message: "Error fetching model", error: error.message });
+    }
 }
 
+//Route: /models/updatemodel/:id
 export async function updateModel(req, res) {
     try {
         const name = req.body.name || req.query.name;
@@ -59,7 +76,8 @@ export async function updateModel(req, res) {
         res.status(500).json({ message: "Error updating model", error: error.message });
     }
 }
-
+//Route: /models/deletemodel/:id
+// This function deletes a model by its ID
 export async function deleteModel(req, res) {
     try {
         const deletedModel = await Model.findByIdAndDelete(req.params.id);

@@ -6,7 +6,7 @@ import authenticated from "../middleware/authentication.js"
 // this file holds things that users should be able to do
 //CRUD operations for Signed In Users, user interactions with models
 
-//Route: /users/models/addCart/:modelid/:username
+//Route: /users/models/addcart/:modelid/:username
 
 export async function addCart(req, res) {
     try {
@@ -182,7 +182,7 @@ export async function personalInfoChange(req, res) {
 }
 
 
-// Route: /users/settings/settings/:username/
+// Route: /users/settings/notifications/:username/
 export async function notificationChange(req, res) {
     try {
         const data = req.query;
