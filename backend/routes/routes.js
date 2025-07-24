@@ -10,7 +10,7 @@ import { googleLogInUser } from "../controllers/googleLogIn.js";
 import { googleSignUpUser } from "../controllers/googleSignUp.js";
 
 const router = express.Router();
-router.use(authenticated); //set up authenticated middleware for all routes
+
 
 // Model routes
 router.get("/models", getAllModels);
@@ -31,6 +31,8 @@ router.post("/users", createUser);
 
 //Log In user
 router.post("/users/:username/:email/:password", logInUser)
+
+router.use(authenticated); //set up authenticated middleware for all routes
 
 //Update User info
 router.put("/users/:username/:password/:confirmpassword", updateUser);

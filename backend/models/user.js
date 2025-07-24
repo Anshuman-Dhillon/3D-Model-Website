@@ -13,7 +13,7 @@ const userSchema = new mongoose.Schema(
     refreshToken: {
       type: String,
       required: true,
-      default: ''
+      default: 'init-refresh-token'
     },
     orders: {
       total_cost: {
