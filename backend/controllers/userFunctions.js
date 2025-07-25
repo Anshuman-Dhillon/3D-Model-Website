@@ -181,7 +181,6 @@ export async function personalInfoChange(req, res) {
     }
 }
 
-
 // Route: /users/settings/notifications/:username/
 export async function notificationChange(req, res) {
     try {

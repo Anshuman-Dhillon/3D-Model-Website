@@ -15,20 +15,24 @@ export async function createUser(req, res) {
   try {
     const { email, username, password, confirmPassword } = req.body;
 
-    // Basic validation
+    // ---- basic validation ----
+    if (!email || !username || !password || !confirmPassword) {
+      return res.status(400).json({ message: "All fields are required" });
+    }
     if (username.length > 50) throw new Error("Username must be less than 50 characters");
     if (username.length < 4) throw new Error("Username must be more than 4 characters");
     if (password !== confirmPassword) throw new Error("Both passwords must be the same");
     if (password.length < 1) throw new Error("You didn't fill in the passwords section");
     if (password.length > 100) throw new Error("Password too long");
 
-    // Check if user/email exists
+    // ---- uniqueness checks (use the nested paths your schema defines) ----
     const existingUser = await User.findOne({
       $or: [
         { "settings.personal_info.username": username },
         { "settings.personal_info.email_address": email }
       ]
     });
+
     if (existingUser) {
       if (existingUser.settings.personal_info.username === username) {
         throw new Error("User with this username already exists!");
@@ -38,11 +42,11 @@ export async function createUser(req, res) {
       }
     }
 
-    // Hash password
-    const saltRounds = parseInt(process.env.SALT_ROUNDS, 10) || 10;
+    // ---- hash password ----
+    const saltRounds = Number(process.env.SALT_ROUNDS) || 10;
     const hashedPassword = await bcrypt.hash(password, saltRounds);
 
-    // Create new user document, matching schema exactly
+    // ---- create user WITHOUT touching transaction_history ----
     const newUser = new User({
       settings: {
         personal_info: {
@@ -62,8 +66,8 @@ export async function createUser(req, res) {
           },
         },
       },
-      transaction_history: [],
-      refreshToken: 'init-refresh-token', // required field with default value
+      // let transaction_history use schema default ([])
+      refreshToken: "init-refresh-token",
       orders: {
         total_cost: 0,
         items: [],
@@ -73,7 +77,13 @@ export async function createUser(req, res) {
 
     await newUser.save();
 
-    res.status(201).json({ message: "User created successfully", user: { username, email_address: email } });
+    res.status(201).json({
+      message: "User created successfully",
+      user: {
+        username,
+        email_address: email,
+      },
+    });
   } catch (error) {
     console.error("Error creating user:", error);
     res.status(500).json({ message: "Error creating user", error: error.message });

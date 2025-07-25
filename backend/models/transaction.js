@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { v4 as uuidv4 } from "uuid"; // for generating unique IDs
 
 // Schema to hold the info about each transaction
 export const transactionSchema = new mongoose.Schema(
@@ -15,8 +16,7 @@ export const transactionSchema = new mongoose.Schema(
     },
     transactionId: {
       type: String,
-      required: true,
-      unique: true,
+      default: uuidv4, // automatically generate unique UUID
     },
     amount: {
       type: Number,
@@ -33,10 +33,10 @@ export const transactionSchema = new mongoose.Schema(
     },
     metadata: {
       type: mongoose.Schema.Types.Mixed, // optional: to store platform-specific data
-    }
+    },
   },
   { timestamps: true }
 );
 
-const modelFile = mongoose.model("Transaction", transactionSchema);
-export default modelFile;
+const Transaction = mongoose.model("Transaction", transactionSchema);
+export default Transaction;

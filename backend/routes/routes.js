@@ -26,11 +26,12 @@ router.delete("/models/deletemodel/:id", deleteModel);
 router.get("/users/getallusers", getAllUsers);
 router.get("/users/getuserbyid/:username", getUserById);
 
-//Sign Up user
-router.post("/users/signup/:email/:username/:password/:confirmpassword", createUser);
+// Sign Up user
+router.post("/users/signup", createUser);
+
 
 //Log In user
-router.post("/users/login/:username/:email/:password", logInUser)
+router.post("/users/login", logInUser);
 
 router.use(authenticated); //set up authenticated middleware for all routes
 
