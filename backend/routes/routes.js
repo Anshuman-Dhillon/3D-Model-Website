@@ -1,5 +1,5 @@
 import express from "express"
-import { addCart, removeCart, editModel, userCreateModel, userGetAllModels, personalInfoChange, notificationChange } from "../controllers/userFunctions.js";
+import { addCart, removeCart, editModel, userCreateModel, userGetAllModels, personalInfoChange, notificationChange, getAllCart } from "../controllers/userFunctions.js";
 import { addTransaction, removeTransaction, transportModel } from "../controllers/payments.js";
 import { getAllModels, getModelById, createModel, updateModel, deleteModel} from "../controllers/modelFunctions.js"
 import {getAllUsers, getUserById, updateUser, deleteUser} from "../controllers/userHelpers.js"
@@ -44,8 +44,10 @@ router.delete("/users/delete/:userid", deleteUser);
 // Signed in user routes
 
 // Cart related routes
-router.get("/users/add/:modelid/:username", addCart);
+router.post("/users/add/:modelid/:username", addCart);
 router.delete("/users/remove/:modelid/:username", removeCart);
+
+router.get("/users/getallcart/:username", getAllCart);
 
 // transaction related routes
 router.get("/users/add/transaction/:username", addTransaction);
@@ -56,12 +58,12 @@ router.post("/transactions/create/:username/:modelid", addTransaction);
 router.delete("/transactions/remove/:username/:transactionId", removeTransaction);
 router.post("/transactions/transport-model", transportModel);
 
-router.get("/users/models/editmodel/:username", editModel)
-router.get("/users/models/createmodel/:username", userCreateModel)
-router.get("/users/models/getallmodels/:username", userGetAllModels)
+router.patch("/users/models/editmodel/:username/:id", editModel);
+router.post("/users/models/createmodel/:username", userCreateModel);
+router.get("/users/models/getallmodels/:username", userGetAllModels);
 
 //settings routes for users
-router.get("/users/settings/settings/:username/:currentpassword", personalInfoChange);
-router.get("/users/settings/notifications/:username", notificationChange);
+router.patch("/users/settings/settings/:username/:currentpassword", personalInfoChange);
+router.patch("/users/settings/notifications/:username", notificationChange);
 
 export default router;

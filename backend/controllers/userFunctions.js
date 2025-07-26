@@ -1,6 +1,6 @@
 import Model from "../models/model.js";
 import User from "../models/user.js";
-import { getAllUsers, getUserById, updateUser, deleteUser } from "./controllers.js";
+import { getAllUsers, getUserById, updateUser, deleteUser } from "./userHelpers.js";
 import authenticated from "../middleware/authentication.js"
 
 // this file holds things that users should be able to do
@@ -69,160 +69,240 @@ export async function removeCart(req, res) {
 
 //Route: /users/models/getallmodels/:username
 
+router.get("/users/models/getallmodels/:username", userGetAllModels);
+
 export async function userGetAllModels(req, res) {
-    try {
-        const models = await Model.find({});
-        res.status(200).json(models);
-    } catch (error) {
-        console.error("Error fetching models:", error);
-        res.status(500).json({ message: "Error fetching models", error: error.message });
+  try {
+    const { username } = req.params;
+
+    const user = await User.findOne(
+      { "settings.personal_info.username": username },
+      { posted_models: 1, _id: 0 }
+    ).lean();
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
     }
+
+    // Return the user's posted models array
+    return res.status(200).json(user.posted_models || []);
+  } catch (error) {
+    console.error("Error fetching models:", error);
+    return res.status(500).json({ message: "Error fetching models" });
+  }
 }
 
 //Route: /users/models/createmodel/:username
+
 export async function userCreateModel(req, res) {
-    try {
-        const name = req.body.name || req.query.name;
-        const description = req.body.description || req.query.description;
-        const price = req.body.price || req.query.price;
+  try {
+    const { username } = req.params;
+    const { name, description, price } = req.body;
 
-        // Input validation
-        if (!name || !description || !price) {
-            return res.status(400).json({ 
-                message: "Missing required fields", 
-                required: ["name", "description", "price"] 
-            });
-        }
-
-        if (isNaN(price) || price < 0) {
-            return res.status(400).json({ message: "Invalid price value" });
-        }
-
-        const newModel = new Model({
-            name,
-            description,
-            price: Number(price)
-        });
-
-        const savedModel = await newModel.save();
-        res.status(201).json(savedModel);
-    } catch (error) {
-        console.error("Error creating model:", error);
-        res.status(500).json({ message: "Error creating model", error: error.message });
+    // Basic validation
+    if (!name || !description || price === undefined) {
+      return res.status(400).json({
+        message: "Missing required fields",
+        required: ["name", "description", "price"],
+      });
     }
+
+    const parsedPrice = Number(price);
+    if (isNaN(parsedPrice) || parsedPrice < 0) {
+      return res.status(400).json({ message: "Invalid price value" });
+    }
+
+    // Find user to associate model with
+    const user = await User.findOne({ "settings.personal_info.username": username });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Create the model, optionally set user reference if needed
+    const newModel = new Model({
+      name: name.trim(),
+      description: description.trim(),
+      price: parsedPrice,
+      // user: user._id,   // uncomment if your schema has a user ref
+    });
+
+    const savedModel = await newModel.save();
+
+    // Optionally push model to user's posted_models array
+    // user.posted_models.push(savedModel);
+    // await user.save();
+
+    return res.status(201).json(savedModel);
+  } catch (error) {
+    console.error("Error creating model:", error);
+    return res.status(500).json({ message: "Error creating model" });
+  }
 }
+
 
 //Route: /users/models/editmodel/:username/modelId
 
 export async function editModel(req, res) {
-    try {
-        const id = req.params.id || req.body.id || req.query.id;
-        if (!id) {
-            return res.status(400).json({ message: "Model ID is required" });
-        }
-
-        const updates = {
-            ...req.query,
-            ...req.body,
-        };
-
-        // Optionally remove `id` from updates if it exists
-        delete updates.id;
-        delete updates._id;
-
-        const updatedModel = await Model.findByIdAndUpdate(id, updates, { new: true });
-
-        if (!updatedModel) {
-            return res.status(404).json({ message: "Model not found" });
-        }
-
-        res.status(200).json(updatedModel);
-    } catch (error) {
-        console.error("Error editing model:", error);
-        res.status(500).json({ message: "Error editing model", error: error.message });
+  try {
+    const { username, id } = req.params;
+    if (!id) {
+      return res.status(400).json({ message: "Model ID is required" });
     }
+
+    // Find user by nested username
+    const user = await User.findOne({ "settings.personal_info.username": username });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Check if user owns the model
+    const ownsModel = user.posted_models.some(
+      (modelId) => modelId.toString() === id
+    );
+    if (!ownsModel) {
+      return res.status(403).json({ message: "You do not have permission to edit this model" });
+    }
+
+    // Prepare updates, remove id fields if present
+    const updates = { ...req.body, ...req.query };
+    delete updates.id;
+    delete updates._id;
+
+    // Update the model document by id
+    const updatedModel = await Model.findByIdAndUpdate(id, updates, {
+      new: true,
+    });
+
+    if (!updatedModel) {
+      return res.status(404).json({ message: "Model not found" });
+    }
+
+    return res.status(200).json(updatedModel);
+  } catch (error) {
+    console.error("Error editing model:", error);
+    return res.status(500).json({ message: "Error editing model" });
+  }
 }
 
 
 // Settings
 // Route: /users/settings/settings/:username/:currentpassword
 export async function personalInfoChange(req, res) {
-    try {
-        const data = req.query;
-        const { username, currentpassword } = req.params;
+  try {
+    const updates = req.query; // partial updates come from query
+    const { username, currentpassword } = req.params;
 
-        const user = await User.findOne({ "username": username });
-
-        if (!user) {
-            return res.status(404).json({ message: "User not found" });
-        }
-
-        const passwordMatch = await bcrypt.compare(currentpassword, user.settings.personal_info.password);
-        if (!passwordMatch) {
-            return res.status(401).json({ message: "Incorrect current password" });
-        }
-
-        // If updating password, hash the new password
-        if (data.password) {
-            data.password = await bcrypt.hash(data.password, 10);
-        }
-
-        for (const key in data) {
-            if (key in user.settings.personal_info) {
-                user.settings.personal_info[key] = data[key];
-            }
-        }
-
-        await user.save();
-        res.status(200).json({ message: "Personal info updated successfully" });
-    } catch (error) {
-        console.error("Error changing settings:", error);
-        res.status(500).json({ message: "Error changing settings", error: error.message });
+    // Your schema nests username under settings.personal_info
+    const user = await User.findOne({ "settings.personal_info.username": username });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
     }
+
+    const storedHash = user.settings.personal_info.password;
+    const passwordMatch = await bcrypt.compare(currentpassword, storedHash);
+    if (!passwordMatch) {
+      return res.status(401).json({ message: "Incorrect current password" });
+    }
+
+    // Handle password change explicitly
+    if (updates.password) {
+      const newHashed = await bcrypt.hash(updates.password, 10);
+      user.settings.personal_info.password = newHashed;
+    }
+
+    // Only update keys that already exist in personal_info (excluding password we handled above)
+    const allowedKeys = Object.keys(user.settings.personal_info.toObject?.() ?? user.settings.personal_info);
+    for (const [key, value] of Object.entries(updates)) {
+      if (key === "password") continue;
+      if (allowedKeys.includes(key)) {
+        user.settings.personal_info[key] = value;
+      }
+    }
+
+    await user.save();
+    return res.status(200).json({ message: "Personal info updated successfully" });
+  } catch (error) {
+    console.error("Error changing settings:", error);
+    return res.status(500).json({ message: "Error changing settings", error: error.message });
+  }
 }
 
 // Route: /users/settings/notifications/:username/
 export async function notificationChange(req, res) {
-    try {
-        const data = req.query;
-        const user = await User.findOne({"username": req.params.username});
-        
-        if (!user) {
-            return res.status(404).json({ message: "User not found" });
-        }
+  try {
+    const data = req.query;
+    const { username } = req.params;
 
-        for (const key in data) {
-            if (key in user.settings.notification_settings) {
-                user.settings.notification_settings[key] = data[key];
-            }
-        }
-        
-        await user.save();
-        res.status(200).json({ message: "Notification settings updated successfully" });
-    } catch (error) {
-        console.error("Error changing settings:", error);
-        res.status(500).json({ message: "Error changing settings", error: error.message });
+    const user = await User.findOne({
+      "settings.personal_info.username": username,
+    });
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
     }
+
+    const notifications =
+      user.settings.payment_methods.notification_settings;
+
+    const allowedKeys = Object.keys(
+      notifications.toObject?.() ?? notifications
+    );
+
+    const toBool = (v) => {
+      if (typeof v === "boolean") return v;
+      if (v === "true" || v === "1") return true;
+      if (v === "false" || v === "0") return false;
+      return v; // fallback (in case you later add non-boolean fields)
+    };
+
+    let touched = 0;
+    for (const [key, value] of Object.entries(data)) {
+      if (allowedKeys.includes(key)) {
+        notifications[key] = toBool(value);
+        touched++;
+      }
+    }
+
+    if (touched === 0) {
+      return res
+        .status(400)
+        .json({ message: "No valid notification fields provided" });
+    }
+
+    await user.save();
+    return res
+      .status(200)
+      .json({ message: "Notification settings updated successfully" });
+  } catch (error) {
+    console.error("Error changing settings:", error);
+    return res
+      .status(500)
+      .json({ message: "Error changing settings", error: error.message });
+  }
 }
 
 
 // Route: /users/settings/settings/:username/
 export async function getAllCart(req, res) {
-    try {
-        const { username } = req.params;
+  try {
+    const { username } = req.params;
 
-        const user = await User.findOne({ "settings.personal_info.username": username });
+    // Correctly find the user by nested username
+    const user = await User.findOne(
+      { "settings.personal_info.username": username },
+      { "orders.items": 1, _id: 0 } // project only items
+    );
 
-        if (!user) {
-            return res.status(404).json({ message: "User not found" });
-        }
-
-        const cart = user.orders.items;
-
-        res.status(200).json(cart);
-    } catch (error) {
-        console.error("Error retrieving cart:", error);
-        res.status(500).json({ message: "Error retrieving cart", error: error.message });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
     }
+
+    // Send the cart items
+    return res.status(200).json(user.orders.items);
+  } catch (error) {
+    console.error("Error retrieving cart:", error);
+    return res.status(500).json({ message: "Error retrieving cart" });
+  }
 }
+
 
