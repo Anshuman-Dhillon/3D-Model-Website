@@ -7,7 +7,7 @@ function Transaction({ modelName, price, orderNumber }) {
     <div className="transaction-card">
       <div className="transaction-header">
         <strong>{modelName}</strong>
-        <span className="transaction-price">${price.toFixed(2)}</span>
+        <span className="transaction-price">${(price ?? 0).toFixed(2)}</span>
       </div>
       <div className="transaction-order-number">{orderNumber || 'Order #111-2222222-3333333'}</div>
     </div>

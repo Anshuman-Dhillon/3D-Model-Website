@@ -7,12 +7,6 @@ export const modelSchema = new mongoose.Schema(
     name: {
       type: String,
       required: true,
-      unique: true,
-    },
-    authType: {
-      type: String,
-      required: true,
-      unique: true,
     },
     description: {
       type: String,
@@ -30,6 +24,53 @@ export const modelSchema = new mongoose.Schema(
       type: Number,
       required: true,
       min: 0,
+    },
+    seller: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
+    sellerName: {
+      type: String,
+      required: true,
+    },
+    // S3 keys for uploaded files
+    fileKey: {
+      type: String,
+      default: "",
+    },
+    thumbnailKey: {
+      type: String,
+      default: "",
+    },
+    thumbnailUrl: {
+      type: String,
+      default: "",
+    },
+    // Multiple image keys stored in S3
+    imageKeys: {
+      type: [String],
+      default: [],
+    },
+    imageUrls: {
+      type: [String],
+      default: [],
+    },
+    downloads: {
+      type: Number,
+      default: 0,
+    },
+    likes: {
+      type: Number,
+      default: 0,
+    },
+    averageRating: {
+      type: Number,
+      default: 0,
+    },
+    reviewCount: {
+      type: Number,
+      default: 0,
     },
   },
   { timestamps: true }

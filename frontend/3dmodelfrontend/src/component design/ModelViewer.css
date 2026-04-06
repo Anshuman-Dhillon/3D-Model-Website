@@ -1,0 +1,210 @@
+/* ── Model Viewer Modal ── */
+
+.model-viewer-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: viewerFadeIn 0.25s ease-out;
+}
+
+@keyframes viewerFadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.model-viewer-modal {
+    width: 90vw;
+    height: 85vh;
+    max-width: 1400px;
+    background: rgba(15, 23, 42, 0.95);
+    border: 1px solid rgba(96, 165, 250, 0.25);
+    border-radius: 16px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    box-shadow: 0 25px 80px rgba(0, 0, 0, 0.6), 0 0 40px rgba(96, 165, 250, 0.1);
+    animation: viewerSlideUp 0.3s ease-out;
+}
+
+@keyframes viewerSlideUp {
+    from { transform: translateY(30px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+.model-viewer-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 20px;
+    border-bottom: 1px solid rgba(100, 116, 139, 0.25);
+    background: rgba(30, 41, 59, 0.6);
+    flex-shrink: 0;
+}
+
+.model-viewer-header h3 {
+    color: #e2e8f0;
+    font-size: 1.1rem;
+    margin: 0;
+    font-weight: 600;
+}
+
+.model-viewer-controls-info {
+    display: flex;
+    gap: 16px;
+    color: #64748b;
+    font-size: 0.78rem;
+}
+
+.model-viewer-controls-info span {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.model-viewer-close {
+    background: rgba(239, 68, 68, 0.15);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    color: #ef4444;
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+
+.model-viewer-close:hover {
+    background: rgba(239, 68, 68, 0.3);
+    border-color: #ef4444;
+    transform: scale(1.05);
+}
+
+.model-viewer-canvas {
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+    cursor: grab;
+}
+
+.model-viewer-canvas:active {
+    cursor: grabbing;
+}
+
+.model-viewer-canvas canvas {
+    display: block;
+    width: 100% !important;
+    height: 100% !important;
+}
+
+/* Loading overlay inside the canvas */
+.model-viewer-loading {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: rgba(15, 23, 42, 0.9);
+    z-index: 10;
+    gap: 16px;
+}
+
+.model-viewer-loading p {
+    color: #94a3b8;
+    font-size: 0.95rem;
+    margin: 0;
+}
+
+.model-viewer-spinner {
+    width: 48px;
+    height: 48px;
+    border: 3px solid rgba(100, 116, 139, 0.3);
+    border-top-color: #60a5fa;
+    border-radius: 50%;
+    animation: viewerSpin 0.8s linear infinite;
+}
+
+@keyframes viewerSpin {
+    to { transform: rotate(360deg); }
+}
+
+/* Error state */
+.model-viewer-error {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: rgba(15, 23, 42, 0.9);
+    z-index: 10;
+    gap: 12px;
+    padding: 40px;
+    text-align: center;
+}
+
+.model-viewer-error-icon {
+    font-size: 2.5rem;
+}
+
+.model-viewer-error p {
+    color: #94a3b8;
+    font-size: 0.95rem;
+    margin: 0;
+    max-width: 400px;
+    line-height: 1.5;
+}
+
+/* View Model button on ModelPage */
+.btn-view-model {
+    background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+    color: #fff;
+    border: none;
+    padding: 8px 20px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s;
+    font-size: 0.9rem;
+}
+
+.btn-view-model:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 16px rgba(59, 130, 246, 0.35);
+    filter: brightness(1.1);
+}
+
+.btn-view-model svg {
+    width: 18px;
+    height: 18px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .model-viewer-modal {
+        width: 96vw;
+        height: 80vh;
+        border-radius: 12px;
+    }
+
+    .model-viewer-header {
+        padding: 10px 14px;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .model-viewer-controls-info {
+        display: none;
+    }
+}

@@ -1,31 +1,31 @@
-import Model from "../models/model.js";
 import User from "../models/user.js";
-import { getAllUsers, getUserById, updateUser, deleteUser } from "./controllers.js";
-import authenticated from "../middleware/authentication.js";
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 
-// Load environment variables from .env file
 dotenv.config();
 
-//Route: /users/signup/:email/:username/:password/:confirmpassword
-// This function handles user sign-up
-
+// POST /auth/signup
 export async function createUser(req, res) {
   try {
     const { email, username, password, confirmPassword } = req.body;
 
-    // ---- basic validation ----
     if (!email || !username || !password || !confirmPassword) {
       return res.status(400).json({ message: "All fields are required" });
     }
-    if (username.length > 50) throw new Error("Username must be less than 50 characters");
-    if (username.length < 4) throw new Error("Username must be more than 4 characters");
-    if (password !== confirmPassword) throw new Error("Both passwords must be the same");
-    if (password.length < 1) throw new Error("You didn't fill in the passwords section");
-    if (password.length > 100) throw new Error("Password too long");
 
-    // ---- uniqueness checks (use the nested paths your schema defines) ----
+    // Email format validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return res.status(400).json({ message: "Invalid email format" });
+    }
+
+    if (username.length > 50) return res.status(400).json({ message: "Username must be less than 50 characters" });
+    if (username.length < 4) return res.status(400).json({ message: "Username must be at least 4 characters" });
+    if (password !== confirmPassword) return res.status(400).json({ message: "Passwords do not match" });
+    if (password.length < 6) return res.status(400).json({ message: "Password must be at least 6 characters" });
+    if (password.length > 100) return res.status(400).json({ message: "Password too long" });
+
     const existingUser = await User.findOne({
       $or: [
         { "settings.personal_info.username": username },
@@ -35,25 +35,23 @@ export async function createUser(req, res) {
 
     if (existingUser) {
       if (existingUser.settings.personal_info.username === username) {
-        throw new Error("User with this username already exists!");
+        return res.status(409).json({ message: "Username already taken" });
       }
       if (existingUser.settings.personal_info.email_address === email) {
-        throw new Error("User with this email already exists!");
+        return res.status(409).json({ message: "Email already registered" });
       }
     }
 
-    // ---- hash password ----
     const saltRounds = Number(process.env.SALT_ROUNDS) || 10;
     const hashedPassword = await bcrypt.hash(password, saltRounds);
 
-    // ---- create user WITHOUT touching transaction_history ----
     const newUser = new User({
       settings: {
         personal_info: {
           username,
           password: hashedPassword,
           email_address: email,
-          profile_picture: "https://example.com/default-profile.png",
+          profile_picture: "",
         },
         payment_methods: {
           google_pay_accounts: [],
@@ -66,23 +64,33 @@ export async function createUser(req, res) {
           },
         },
       },
-      // let transaction_history use schema default ([])
       refreshToken: "init-refresh-token",
-      orders: {
-        total_cost: 0,
-        items: [],
-      },
+      orders: { total_cost: 0, items: [] },
       posted_models: [],
+      purchased_models: [],
     });
 
     await newUser.save();
 
+    // Auto-login after signup — issue tokens
+    const payload = { id: newUser._id, username };
+    const accessToken = jwt.sign(payload, process.env.ACCESS_SECRET_TOKEN, { expiresIn: "15m" });
+    const refreshToken = jwt.sign(payload, process.env.REFRESH_SECRET_TOKEN, { expiresIn: "3h" });
+
+    newUser.refreshToken = refreshToken;
+    await newUser.save();
+
+    res.cookie("refreshToken", refreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "Strict",
+      maxAge: 3 * 60 * 60 * 1000,
+    });
+
     res.status(201).json({
       message: "User created successfully",
-      user: {
-        username,
-        email_address: email,
-      },
+      user: { id: newUser._id, username, email },
+      accessToken,
     });
   } catch (error) {
     console.error("Error creating user:", error);

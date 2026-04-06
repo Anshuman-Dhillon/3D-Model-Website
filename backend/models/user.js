@@ -1,5 +1,4 @@
 import mongoose from "mongoose";
-import { modelSchema } from "./model.js";
 import { transactionSchema } from "./transaction.js";
 
 const userSchema = new mongoose.Schema(
@@ -23,13 +22,39 @@ const userSchema = new mongoose.Schema(
         default: 0,
       },
       items: {
-        type: [modelSchema],  // embed array of model schemas
+        type: [{ type: mongoose.Schema.Types.ObjectId, ref: "Model" }],
         default: [],
       },
     },
 
+    authProvider: {
+      type: String,
+      enum: ["local", "google"],
+      default: "local",
+    },
+
     posted_models: {
-      type: [modelSchema],
+      type: [{ type: mongoose.Schema.Types.ObjectId, ref: "Model" }],
+      default: [],
+    },
+
+    purchased_models: {
+      type: [{ type: mongoose.Schema.Types.ObjectId, ref: "Model" }],
+      default: [],
+    },
+
+    liked_models: {
+      type: [{ type: mongoose.Schema.Types.ObjectId, ref: "Model" }],
+      default: [],
+    },
+
+    followers: {
+      type: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+      default: [],
+    },
+
+    following: {
+      type: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
       default: [],
     },
 
@@ -75,7 +100,7 @@ const userSchema = new mongoose.Schema(
         },
         profile_picture: {
           type: String,
-          default: "https://example.com/default-profile.png", // optional
+          default: "",
         },
         username: {
           type: String,

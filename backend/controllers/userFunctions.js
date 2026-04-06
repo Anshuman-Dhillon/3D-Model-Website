@@ -1,308 +1,249 @@
 import Model from "../models/model.js";
 import User from "../models/user.js";
-import { getAllUsers, getUserById, updateUser, deleteUser } from "./userHelpers.js";
-import authenticated from "../middleware/authentication.js"
+import bcrypt from "bcrypt";
+import { attachThumbnailUrls } from "./modelFunctions.js";
+import s3 from "../config/s3.js";
+import { PutObjectCommand, DeleteObjectCommand, GetObjectCommand } from "@aws-sdk/client-s3";
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
-// this file holds things that users should be able to do
-//CRUD operations for Signed In Users, user interactions with models
+const BUCKET = process.env.S3_BUCKET_NAME;
 
-//Route: /users/models/addcart/:modelid/:username
+// Helper: generate presigned URL for a profile picture key
+async function profilePicUrl(key) {
+    if (!key) return "";
+    return getSignedUrl(s3, new GetObjectCommand({ Bucket: BUCKET, Key: key }), { expiresIn: 3600 });
+}
 
+// POST /cart/:modelId — add model to cart
 export async function addCart(req, res) {
     try {
-        const userId = req.params.id; // Assuming the user ID is in the URL
-        const modelId = req.body.modelId; // Assuming modelId is sent in request body
+        const userId = req.user.id;
+        const { modelId } = req.params;
 
-        // Fetch model
         const model = await Model.findById(modelId);
-        if (!model) {
-            return res.status(404).json({ message: "Model not found" });
+        if (!model) return res.status(404).json({ message: "Model not found" });
+
+        const user = await User.findById(userId);
+        if (!user) return res.status(404).json({ message: "User not found" });
+
+        // Don't add duplicates
+        if (user.orders.items.some(id => id.toString() === modelId)) {
+            return res.status(400).json({ message: "Model already in cart" });
         }
 
-        // Append model to user's cart (e.g., orders.items)
-        const updatedUser = await User.findByIdAndUpdate(
-            userId,
-            {
-                $push: {
-                    "orders.items": model,
-                },
-            },
-            { new: true, runValidators: true }
-        );
+        user.orders.items.push(model._id);
+        user.orders.total_cost = +(user.orders.total_cost + model.price).toFixed(2);
+        await user.save();
 
-        res.status(201).json({ message: "Added to cart", model: model });
-    } catch(error) {
-        res.status(500).json({ message: "Unable to add model to cart", error: error.message });
-        console.error("Unable to add model to cart", error);
+        res.status(200).json({ message: "Added to cart", cart: user.orders });
+    } catch (error) {
+        console.error("Error adding to cart:", error);
+        res.status(500).json({ message: "Unable to add to cart", error: error.message });
     }
 }
 
-//Route: /users/models/removecart/:modelid/:username
-
+// DELETE /cart/:modelId — remove model from cart
 export async function removeCart(req, res) {
     try {
-        const userId = req.params.id;
-        const modelId = req.params.modelId;
+        const userId = req.user.id;
+        const { modelId } = req.params;
 
-        const updatedUser = await User.findByIdAndUpdate(
-            userId,
-            {
-                $pull: {
-                    "orders.items": { _id: modelId }
-                }
-            },
-            { new: true }
-        );
+        const user = await User.findById(userId);
+        if (!user) return res.status(404).json({ message: "User not found" });
 
-        if (!updatedUser) {
-            return res.status(404).json({ message: "User not found" });
+        const model = await Model.findById(modelId);
+        const price = model ? model.price : 0;
+
+        user.orders.items = user.orders.items.filter(id => id.toString() !== modelId);
+        user.orders.total_cost = Math.max(0, +(user.orders.total_cost - price).toFixed(2));
+        await user.save();
+
+        res.status(200).json({ message: "Removed from cart", cart: user.orders });
+    } catch (error) {
+        console.error("Error removing from cart:", error);
+        res.status(500).json({ message: "Unable to remove from cart", error: error.message });
+    }
+}
+
+// GET /cart — get user's cart items
+export async function getAllCart(req, res) {
+    try {
+        const userId = req.user.id;
+
+        const user = await User.findById(userId).populate("orders.items");
+        if (!user) return res.status(404).json({ message: "User not found" });
+
+        const itemsWithUrls = await attachThumbnailUrls(user.orders.items || []);
+        res.status(200).json({
+            items: itemsWithUrls,
+            total_cost: user.orders.total_cost,
+        });
+    } catch (error) {
+        console.error("Error retrieving cart:", error);
+        res.status(500).json({ message: "Error retrieving cart" });
+    }
+}
+
+// GET /user/models — get user's posted models
+export async function userGetAllModels(req, res) {
+    try {
+        const userId = req.user.id;
+        const user = await User.findById(userId).populate("posted_models");
+        if (!user) return res.status(404).json({ message: "User not found" });
+
+        const modelsWithUrls = await attachThumbnailUrls(user.posted_models || []);
+        res.status(200).json(modelsWithUrls);
+    } catch (error) {
+        console.error("Error fetching user models:", error);
+        res.status(500).json({ message: "Error fetching models" });
+    }
+}
+
+// PATCH /user/settings — update personal info
+export async function personalInfoChange(req, res) {
+    try {
+        const userId = req.user.id;
+        const { currentPassword, username, email, newPassword } = req.body;
+
+        const user = await User.findById(userId);
+        if (!user) return res.status(404).json({ message: "User not found" });
+
+        const isGoogleUser = user.authProvider === "google";
+
+        // Google users don't need current password for username/email changes,
+        // but cannot change passwords at all.
+        if (isGoogleUser) {
+            if (newPassword) {
+                return res.status(400).json({ message: "Google account users cannot set a password. Use Google to sign in." });
+            }
+        } else {
+            // Local users must verify current password
+            if (!currentPassword) {
+                return res.status(400).json({ message: "Current password is required" });
+            }
+            const match = await bcrypt.compare(currentPassword, user.settings.personal_info.password);
+            if (!match) return res.status(401).json({ message: "Incorrect current password" });
         }
 
-        res.status(200).json({ message: "Successfully removed model from cart" });
+        if (username) user.settings.personal_info.username = username;
+        if (email) user.settings.personal_info.email_address = email;
+        if (newPassword && !isGoogleUser) {
+            const hashed = await bcrypt.hash(newPassword, Number(process.env.SALT_ROUNDS) || 10);
+            user.settings.personal_info.password = hashed;
+        }
+
+        await user.save();
+        res.status(200).json({
+            message: "Profile updated successfully",
+            user: {
+                id: user._id,
+                username: user.settings.personal_info.username,
+                email: user.settings.personal_info.email_address,
+            },
+        });
     } catch (error) {
-        console.error("Error removing model from cart:", error);
-        res.status(500).json({ message: "Unable to remove model from cart", error: error.message });
+        console.error("Error updating settings:", error);
+        res.status(500).json({ message: "Error updating settings", error: error.message });
     }
 }
 
-//Code for CRUD operations on Models
-
-//Route: /users/models/getallmodels/:username
-
-router.get("/users/models/getallmodels/:username", userGetAllModels);
-
-export async function userGetAllModels(req, res) {
-  try {
-    const { username } = req.params;
-
-    const user = await User.findOne(
-      { "settings.personal_info.username": username },
-      { posted_models: 1, _id: 0 }
-    ).lean();
-
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
-
-    // Return the user's posted models array
-    return res.status(200).json(user.posted_models || []);
-  } catch (error) {
-    console.error("Error fetching models:", error);
-    return res.status(500).json({ message: "Error fetching models" });
-  }
-}
-
-//Route: /users/models/createmodel/:username
-
-export async function userCreateModel(req, res) {
-  try {
-    const { username } = req.params;
-    const { name, description, price } = req.body;
-
-    // Basic validation
-    if (!name || !description || price === undefined) {
-      return res.status(400).json({
-        message: "Missing required fields",
-        required: ["name", "description", "price"],
-      });
-    }
-
-    const parsedPrice = Number(price);
-    if (isNaN(parsedPrice) || parsedPrice < 0) {
-      return res.status(400).json({ message: "Invalid price value" });
-    }
-
-    // Find user to associate model with
-    const user = await User.findOne({ "settings.personal_info.username": username });
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
-
-    // Create the model, optionally set user reference if needed
-    const newModel = new Model({
-      name: name.trim(),
-      description: description.trim(),
-      price: parsedPrice,
-      // user: user._id,   // uncomment if your schema has a user ref
-    });
-
-    const savedModel = await newModel.save();
-
-    // Optionally push model to user's posted_models array
-    // user.posted_models.push(savedModel);
-    // await user.save();
-
-    return res.status(201).json(savedModel);
-  } catch (error) {
-    console.error("Error creating model:", error);
-    return res.status(500).json({ message: "Error creating model" });
-  }
-}
-
-
-//Route: /users/models/editmodel/:username/modelId
-
-export async function editModel(req, res) {
-  try {
-    const { username, id } = req.params;
-    if (!id) {
-      return res.status(400).json({ message: "Model ID is required" });
-    }
-
-    // Find user by nested username
-    const user = await User.findOne({ "settings.personal_info.username": username });
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
-
-    // Check if user owns the model
-    const ownsModel = user.posted_models.some(
-      (modelId) => modelId.toString() === id
-    );
-    if (!ownsModel) {
-      return res.status(403).json({ message: "You do not have permission to edit this model" });
-    }
-
-    // Prepare updates, remove id fields if present
-    const updates = { ...req.body, ...req.query };
-    delete updates.id;
-    delete updates._id;
-
-    // Update the model document by id
-    const updatedModel = await Model.findByIdAndUpdate(id, updates, {
-      new: true,
-    });
-
-    if (!updatedModel) {
-      return res.status(404).json({ message: "Model not found" });
-    }
-
-    return res.status(200).json(updatedModel);
-  } catch (error) {
-    console.error("Error editing model:", error);
-    return res.status(500).json({ message: "Error editing model" });
-  }
-}
-
-
-// Settings
-// Route: /users/settings/settings/:username/:currentpassword
-export async function personalInfoChange(req, res) {
-  try {
-    const updates = req.query; // partial updates come from query
-    const { username, currentpassword } = req.params;
-
-    // Your schema nests username under settings.personal_info
-    const user = await User.findOne({ "settings.personal_info.username": username });
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
-
-    const storedHash = user.settings.personal_info.password;
-    const passwordMatch = await bcrypt.compare(currentpassword, storedHash);
-    if (!passwordMatch) {
-      return res.status(401).json({ message: "Incorrect current password" });
-    }
-
-    // Handle password change explicitly
-    if (updates.password) {
-      const newHashed = await bcrypt.hash(updates.password, 10);
-      user.settings.personal_info.password = newHashed;
-    }
-
-    // Only update keys that already exist in personal_info (excluding password we handled above)
-    const allowedKeys = Object.keys(user.settings.personal_info.toObject?.() ?? user.settings.personal_info);
-    for (const [key, value] of Object.entries(updates)) {
-      if (key === "password") continue;
-      if (allowedKeys.includes(key)) {
-        user.settings.personal_info[key] = value;
-      }
-    }
-
-    await user.save();
-    return res.status(200).json({ message: "Personal info updated successfully" });
-  } catch (error) {
-    console.error("Error changing settings:", error);
-    return res.status(500).json({ message: "Error changing settings", error: error.message });
-  }
-}
-
-// Route: /users/settings/notifications/:username/
+// PATCH /user/notifications — update notification preferences
 export async function notificationChange(req, res) {
-  try {
-    const data = req.query;
-    const { username } = req.params;
+    try {
+        const userId = req.user.id;
+        const { email_notifications, push_notifications, sms_alerts, newsletter_subscription } = req.body;
 
-    const user = await User.findOne({
-      "settings.personal_info.username": username,
-    });
+        const user = await User.findById(userId);
+        if (!user) return res.status(404).json({ message: "User not found" });
 
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
+        const ns = user.settings.payment_methods.notification_settings;
+        if (email_notifications !== undefined) ns.email_notifications = email_notifications;
+        if (push_notifications !== undefined) ns.push_notifications = push_notifications;
+        if (sms_alerts !== undefined) ns.sms_alerts = sms_alerts;
+        if (newsletter_subscription !== undefined) ns.newsletter_subscription = newsletter_subscription;
+
+        await user.save();
+        res.status(200).json({
+            message: "Notification settings updated",
+            notifications: ns,
+        });
+    } catch (error) {
+        console.error("Error updating notifications:", error);
+        res.status(500).json({ message: "Error updating notifications", error: error.message });
     }
-
-    const notifications =
-      user.settings.payment_methods.notification_settings;
-
-    const allowedKeys = Object.keys(
-      notifications.toObject?.() ?? notifications
-    );
-
-    const toBool = (v) => {
-      if (typeof v === "boolean") return v;
-      if (v === "true" || v === "1") return true;
-      if (v === "false" || v === "0") return false;
-      return v; // fallback (in case you later add non-boolean fields)
-    };
-
-    let touched = 0;
-    for (const [key, value] of Object.entries(data)) {
-      if (allowedKeys.includes(key)) {
-        notifications[key] = toBool(value);
-        touched++;
-      }
-    }
-
-    if (touched === 0) {
-      return res
-        .status(400)
-        .json({ message: "No valid notification fields provided" });
-    }
-
-    await user.save();
-    return res
-      .status(200)
-      .json({ message: "Notification settings updated successfully" });
-  } catch (error) {
-    console.error("Error changing settings:", error);
-    return res
-      .status(500)
-      .json({ message: "Error changing settings", error: error.message });
-  }
 }
 
+// GET /user/profile — get current user's profile
+export async function getProfile(req, res) {
+    try {
+        const user = await User.findById(req.user.id)
+            .populate("posted_models")
+            .populate("purchased_models");
+        if (!user) return res.status(404).json({ message: "User not found" });
 
-// Route: /users/settings/settings/:username/
-export async function getAllCart(req, res) {
-  try {
-    const { username } = req.params;
+        const postedWithUrls = await attachThumbnailUrls(user.posted_models || []);
+        const purchasedWithUrls = await attachThumbnailUrls(user.purchased_models || []);
+        const profilePicUrl_ = await profilePicUrl(user.settings.personal_info.profile_picture);
 
-    // Correctly find the user by nested username
-    const user = await User.findOne(
-      { "settings.personal_info.username": username },
-      { "orders.items": 1, _id: 0 } // project only items
-    );
-
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
+        res.status(200).json({
+            id: user._id,
+            username: user.settings.personal_info.username,
+            email: user.settings.personal_info.email_address,
+            profilePicture: profilePicUrl_,
+            authProvider: user.authProvider || "local",
+            notifications: user.settings.payment_methods.notification_settings,
+            postedModels: postedWithUrls,
+            purchasedModels: purchasedWithUrls,
+            transactions: user.transaction_history,
+            followerCount: user.followers?.length || 0,
+            followingCount: user.following?.length || 0,
+            createdAt: user.createdAt,
+        });
+    } catch (error) {
+        console.error("Error fetching profile:", error);
+        res.status(500).json({ message: "Error fetching profile" });
     }
-
-    // Send the cart items
-    return res.status(200).json(user.orders.items);
-  } catch (error) {
-    console.error("Error retrieving cart:", error);
-    return res.status(500).json({ message: "Error retrieving cart" });
-  }
 }
 
+// PUT /user/profile-picture — upload / replace profile picture
+export async function uploadProfilePicture(req, res) {
+    try {
+        const userId = req.user.id;
+        const file = req.file;
 
+        if (!file) return res.status(400).json({ message: "No image file provided" });
+
+        const allowedTypes = ["image/jpeg", "image/png", "image/webp"];
+        if (!allowedTypes.includes(file.mimetype)) {
+            return res.status(400).json({ message: "Only JPEG, PNG, and WebP images are allowed" });
+        }
+
+        const user = await User.findById(userId);
+        if (!user) return res.status(404).json({ message: "User not found" });
+
+        // Delete old profile picture from S3 if exists
+        const oldKey = user.settings.personal_info.profile_picture;
+        if (oldKey) {
+            await s3.send(new DeleteObjectCommand({ Bucket: BUCKET, Key: oldKey })).catch(() => {});
+        }
+
+        // Upload new one
+        const ext = file.originalname.split(".").pop();
+        const key = `profile-pictures/${userId}-${Date.now()}.${ext}`;
+        await s3.send(new PutObjectCommand({
+            Bucket: BUCKET,
+            Key: key,
+            Body: file.buffer,
+            ContentType: file.mimetype,
+        }));
+
+        user.settings.personal_info.profile_picture = key;
+        await user.save();
+
+        const url = await profilePicUrl(key);
+        res.status(200).json({ message: "Profile picture updated", profilePicture: url });
+    } catch (error) {
+        console.error("Error uploading profile picture:", error);
+        res.status(500).json({ message: "Error uploading profile picture" });
+    }
+}

@@ -1,7 +1,35 @@
-main {
-    padding-bottom: 0px;
-    /* space to make room for footer */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
 }
+
+main {
+    padding-top: 100px; /* navbar 60px + secondary bar 40px */
+    padding-bottom: 0;
+}
+
 #root {
-    background-image: linear-gradient(to right, rgb(34, 60, 79), rgb(35, 48, 88));
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+    min-height: 100vh;
+}
+
+/* Smooth scrolling */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+}
+::-webkit-scrollbar-track {
+    background: #1e293b;
+}
+::-webkit-scrollbar-thumb {
+    background: #475569;
+    border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #64748b;
 }

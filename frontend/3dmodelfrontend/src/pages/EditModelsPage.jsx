@@ -1,79 +1,43 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import ItemGrid from '../components/ItemGrid';
-import { Navigate, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import { apiGetMyModels } from '../api';
+import { useAuth } from '../context/AuthContext';
+import '../pages design/EditModelsPage.css';
 
 function EditModelsPage() {
     const navigate = useNavigate();
-    const containerRef = useRef(null);
-    const [atBottom, setAtBottom] = useState(false);
+    const { user } = useAuth();
+    const [models, setModels] = useState([]);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const handleScroll = () => {
-            if (!containerRef.current) return;
-            const containerBottom = containerRef.current.getBoundingClientRect().bottom;
-            const windowHeight = window.innerHeight;
-            setAtBottom(containerBottom <= windowHeight + 20); // 20px buffer
-        };
-
-        window.addEventListener('scroll', handleScroll);
-        handleScroll();
-
-        return () => window.removeEventListener('scroll', handleScroll);
-    }, []);
+        apiGetMyModels().then(data => {
+            setModels(Array.isArray(data) ? data : []);
+            setLoading(false);
+        });
+    }, [user]);
 
     return (
-                <div
-                    className="container py-4"
-                    ref={containerRef}
-                    style={{ position: 'relative', minHeight: '100vh' }}
-                >
-                    <h1 className="text-center mb-5" style={{ color: '#bed5ed' }}>
-                        My Models
-                    </h1>
+        <div className="container py-4" style={{ position: 'relative', minHeight: '100vh' }}>
+            <h1 className="text-center mb-5" style={{ color: '#bed5ed' }}>My Models</h1>
+            {loading ? (
+                <p className="text-center text-light">Loading...</p>
+            ) : (
+                <ItemGrid models={models} actions={["Edit", "Delete"]} />
+            )}
 
-                    <ItemGrid actions={["Edit", "Delete"]} />
-
-                    {/* Floating Add New Model button */}
-                    <button
-  onClick={() => navigate("/managemodel")}
-  className="btn"
-  style={{
-    position: 'fixed',
-    bottom: atBottom ? '120px' : '60px',
-    right: '60px',
-    zIndex: 1000,
-    borderRadius: '50%',
-    backgroundColor: '#3092bf',
-    color: '#000',
-    border: '1px solid #000',
-    width: '56px',
-    height: '56px',
-    fontSize: '2rem',
-    fontWeight: '600',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 0,           // explicitly zero padding
-    lineHeight: 1,        // remove extra line height
-    cursor: 'pointer',
-    transition: 'background-color 0.3s ease, color 0.3s ease, bottom 0.3s ease',
-  }}
-  
-  onMouseEnter={(e) => {
-    e.currentTarget.style.backgroundColor = '#1d6fa5';  // darker blue on hover
-    e.currentTarget.style.color = '#fff';
-  }}
-  onMouseLeave={(e) => {
-    e.currentTarget.style.backgroundColor = '#3092bf';
-    e.currentTarget.style.color = '#000';
-  }}
->
-  +
-</button>
-
-
-
-
+            <button
+                onClick={() => navigate("/managemodel")}
+                className="fab-upload"
+                title="Upload New Model"
+            >
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                    <polyline points="17 8 12 3 7 8"/>
+                    <line x1="12" y1="3" x2="12" y2="15"/>
+                </svg>
+            </button>
         </div>
     );
 }

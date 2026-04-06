@@ -1,9 +1,128 @@
-/* Add to ModelPage.css (optional improvement for form spacing) */
+/* ManageModelPage upload area */
+.manage-upload-area {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 10px 0;
+}
+
+.manage-upload-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.manage-upload-label {
+  color: #cbd5e1;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.manage-thumbnail-drop,
+.manage-file-drop {
+  border: 2px dashed rgba(100, 116, 139, 0.4);
+  border-radius: 12px;
+  padding: 24px;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+  color: #94a3b8;
+  font-size: 0.9rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.manage-thumbnail-drop:hover,
+.manage-file-drop:hover {
+  border-color: #60a5fa;
+  background: rgba(96, 165, 250, 0.05);
+}
+
+.manage-upload-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.manage-upload-icon {
+  font-size: 2rem;
+}
+
+.manage-thumb-preview {
+  max-width: 100%;
+  max-height: 200px;
+  border-radius: 10px;
+  object-fit: cover;
+}
+
+.manage-gallery-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.manage-gallery-item {
+  position: relative;
+  width: 80px;
+  height: 80px;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid rgba(100, 116, 139, 0.3);
+}
+
+.manage-gallery-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.manage-gallery-remove {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(239, 68, 68, 0.9);
+  color: #fff;
+  font-size: 14px;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
+.manage-gallery-add {
+  width: 80px;
+  height: 80px;
+  border: 2px dashed rgba(100, 116, 139, 0.4);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #94a3b8;
+  font-size: 1.5rem;
+  transition: border-color 0.2s, color 0.2s;
+}
+
+.manage-gallery-add:hover {
+  border-color: #60a5fa;
+  color: #60a5fa;
+}
+
+/* Form styling from ModelPage */
 .right-box .form-label {
-    font-weight: 600;
-    margin-bottom: 6px;
+  font-weight: 600;
+  margin-bottom: 6px;
 }
 
 .right-box .form-control {
-    margin-bottom: 16px;
+  margin-bottom: 16px;
 }

@@ -4,38 +4,54 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: rgba(0, 0, 0, 0.5);
-    z-index: 999;
+    background-color: rgba(0, 0, 0, 0.6);
+    -webkit-backdrop-filter: blur(4px);
+    backdrop-filter: blur(4px);
+    z-index: 9999;
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
 .messagebox-container {
-    background: white;
-    padding: 24px;
-    border-radius: 12px;
+    background: #1e293b;
+    border: 1px solid rgba(100, 116, 139, 0.4);
+    padding: 28px;
+    border-radius: 14px;
     max-width: 400px;
     text-align: center;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+    color: #e2e8f0;
 }
 
 .messagebox-buttons {
     display: flex;
     justify-content: center;
     gap: 12px;
-    margin-top: 16px;
+    margin-top: 20px;
 }
 
 .messagebox-buttons button {
-    padding: 8px 16px;
-    border-radius: 6px;
-    border: none;
-    background: #007bff;
-    color: white;
+    padding: 10px 24px;
+    border-radius: 8px;
+    border: 1px solid rgba(100, 116, 139, 0.3);
+    background: transparent;
+    color: #e2e8f0;
     cursor: pointer;
+    font-weight: 500;
+    transition: all 0.2s;
 }
 
-.messagebox-buttons button:hover {
-    background: #0056b3;
+.messagebox-buttons button:first-child {
+    background: #ef4444;
+    border-color: #ef4444;
+    color: white;
+}
+
+.messagebox-buttons button:first-child:hover {
+    background: #dc2626;
+}
+
+.messagebox-buttons button:last-child:hover {
+    background: rgba(100, 116, 139, 0.2);
 }

@@ -1,126 +1,184 @@
+import Stripe from "stripe";
 import Model from "../models/model.js";
 import User from "../models/user.js";
-import { getAllUsers, getUserById, updateUser, deleteUser } from "./controllers.js";
-import authenticated from "../middleware/authentication.js"
 
-//This file has all the methods related to transactions
+const stripe = process.env.STRIPE_SECRET_KEY
+    ? new Stripe(process.env.STRIPE_SECRET_KEY)
+    : null;
 
-//Route: /users/models/addtransaction/:username/:modelid
-
-export async function addTransaction(req, res) {
+// POST /transactions/checkout — create a Stripe Checkout Session for cart items
+export async function checkout(req, res) {
+    if (!stripe) return res.status(503).json({ message: "Stripe is not configured" });
     try {
-        const username = req.params.username;
-        const modelId = req.params.modelid;
+        const userId = req.user.id;
 
-        const user = await User.findOne({ username });
-        if (!user) {
-            return res.status(404).json({ message: "User not found" });
+        const user = await User.findById(userId).populate("orders.items");
+        if (!user) return res.status(404).json({ message: "User not found" });
+
+        if (!user.orders.items.length) {
+            return res.status(400).json({ message: "Cart is empty" });
         }
 
-        const model = await Model.findById(modelId);
-        if (!model) {
-            return res.status(404).json({ message: "Model not found" });
-        }
+        // Build Stripe line items from cart
+        const lineItems = user.orders.items.map(model => ({
+            price_data: {
+                currency: "usd",
+                product_data: {
+                    name: model.name,
+                    description: model.description?.substring(0, 500) || "3D Model",
+                },
+                unit_amount: Math.round(model.price * 100), // cents
+            },
+            quantity: 1,
+        }));
 
-        const transaction = {
-            date: new Date(),
-            modelName: model.name,
-            orderNumber: Date.now().toString(36) + Math.random().toString(36).substr(2),
-            price: model.price,
-            modelId: model._id,
-            sellerId: model.sellerId
-        };
-
-        user.transactions.push(transaction);
-        await user.save();
-
-        res.status(201).json({ 
-            message: "Added transaction", 
-            transaction 
+        const session = await stripe.checkout.sessions.create({
+            payment_method_types: ["card"],
+            line_items: lineItems,
+            mode: "payment",
+            success_url: `${process.env.CLIENT_URL}/transactions?session_id={CHECKOUT_SESSION_ID}`,
+            cancel_url: `${process.env.CLIENT_URL}/cart`,
+            metadata: {
+                userId: userId.toString(),
+                modelIds: JSON.stringify(user.orders.items.map(m => m._id.toString())),
+            },
         });
+
+        res.status(200).json({ url: session.url, sessionId: session.id });
     } catch (error) {
-        res.status(500).json({ message: "Unable to add transaction", error: error.message });
-        console.error("Unable to add transaction", error);
+        console.error("Error during checkout:", error);
+        res.status(500).json({ message: "Checkout failed", error: error.message });
     }
 }
 
-//Warning: We may not allow user to do this
+// POST /transactions/webhook — Stripe webhook to fulfill orders
+export async function stripeWebhook(req, res) {
+    if (!stripe) return res.status(503).json({ message: "Stripe is not configured" });
+    const sig = req.headers["stripe-signature"];
+    let event;
 
-//Route: /users/models/removetransaction/:username
-
-export async function removeTransaction(req, res) {
     try {
-        const username = req.params.username;
-        const transactionId = req.body.transactionId;
+        event = stripe.webhooks.constructEvent(req.body, sig, process.env.STRIPE_WEBHOOK_SECRET);
+    } catch (err) {
+        console.error("Webhook signature verification failed:", err.message);
+        return res.status(400).json({ message: `Webhook Error: ${err.message}` });
+    }
 
-        if (!transactionId) {
-            return res.status(400).json({ message: "Transaction ID is required" });
+    if (event.type === "checkout.session.completed") {
+        const session = event.data.object;
+        const { userId, modelIds } = session.metadata;
+
+        try {
+            const user = await User.findById(userId);
+            if (!user) return res.status(404).json({ message: "User not found" });
+
+            const parsedModelIds = JSON.parse(modelIds);
+
+            for (const modelId of parsedModelIds) {
+                const model = await Model.findById(modelId);
+                if (!model) continue;
+
+                user.transaction_history.push({
+                    userId: user._id,
+                    modelId: model._id,
+                    modelName: model.name,
+                    platform: "Stripe",
+                    amount: model.price,
+                    currency: "USD",
+                    status: "completed",
+                    metadata: {
+                        stripeSessionId: session.id,
+                        stripePaymentIntentId: session.payment_intent,
+                    },
+                });
+                user.purchased_models.push(model._id);
+            }
+
+            // Clear cart
+            user.orders.items = [];
+            user.orders.total_cost = 0;
+            await user.save();
+        } catch (err) {
+            console.error("Error fulfilling order:", err);
+        }
+    }
+
+    res.status(200).json({ received: true });
+}
+
+// POST /transactions/confirm — confirm order after Stripe redirect (fallback for no webhook)
+export async function confirmCheckout(req, res) {
+    if (!stripe) return res.status(503).json({ message: "Stripe is not configured" });
+    try {
+        const { sessionId } = req.body;
+        const userId = req.user.id;
+
+        if (!sessionId) return res.status(400).json({ message: "Session ID required" });
+
+        const session = await stripe.checkout.sessions.retrieve(sessionId);
+
+        if (session.payment_status !== "paid") {
+            return res.status(400).json({ message: "Payment not completed" });
         }
 
-        const user = await User.findOne({ username });
-        if (!user) {
-            return res.status(404).json({ message: "User not found" });
-        }
+        // Check if already fulfilled to prevent double-processing
+        const user = await User.findById(userId);
+        if (!user) return res.status(404).json({ message: "User not found" });
 
-        const updatedUser = await User.findOneAndUpdate(
-            { username },
-            { $pull: { transactions: { _id: transactionId } } },
-            { new: true }
+        const alreadyFulfilled = user.transaction_history.some(
+            t => t.metadata?.stripeSessionId === sessionId
         );
 
-        if (!updatedUser) {
-            return res.status(404).json({ message: "Transaction not found" });
+        if (alreadyFulfilled) {
+            return res.status(200).json({ message: "Order already fulfilled", transactions: user.transaction_history });
         }
 
-        res.status(200).json({ 
-            message: "Successfully removed transaction", 
-            transactions: updatedUser.transactions 
-        });
+        // Fulfill the order
+        const parsedModelIds = JSON.parse(session.metadata.modelIds);
+
+        const transactions = [];
+        for (const modelId of parsedModelIds) {
+            const model = await Model.findById(modelId);
+            if (!model) continue;
+
+            const transaction = {
+                userId: user._id,
+                modelId: model._id,
+                modelName: model.name,
+                platform: "Stripe",
+                amount: model.price,
+                currency: "USD",
+                status: "completed",
+                metadata: {
+                    stripeSessionId: sessionId,
+                    stripePaymentIntentId: session.payment_intent,
+                },
+            };
+            user.transaction_history.push(transaction);
+            user.purchased_models.push(model._id);
+            transactions.push(transaction);
+        }
+
+        user.orders.items = [];
+        user.orders.total_cost = 0;
+        await user.save();
+
+        res.status(200).json({ message: "Checkout confirmed", transactions });
     } catch (error) {
-        res.status(500).json({ message: "Unable to remove transaction", error: error.message });
-        console.error("Unable to remove transaction", error);
+        console.error("Error confirming checkout:", error);
+        res.status(500).json({ message: "Confirmation failed", error: error.message });
     }
 }
 
-//Transporting the models from seller to buyer
-
-//Route: /users/models/transportmodel/:sellerId/:buyerId/:modelId
-
-export async function transportModel(req, res) {
+// GET /transactions — get user's transaction history
+export async function getTransactions(req, res) {
     try {
-        const { sellerId, buyerId, modelId } = req.params;
+        const user = await User.findById(req.user.id);
+        if (!user) return res.status(404).json({ message: "User not found" });
 
-        const seller = await User.findById(sellerId);
-        if (!seller) {
-            return res.status(404).json({ message: "Seller not found" });
-        }
-
-        const buyer = await User.findById(buyerId);
-        if (!buyer) {
-            return res.status(404).json({ message: "Buyer not found" });
-        }
-
-        const model = await Model.findById(modelId);
-        if (!model) {
-            return res.status(404).json({ message: "Model not found" });
-        }
-
-        // Check if the seller owns the model
-        if (model.sellerId.toString() !== sellerId) {
-            return res.status(403).json({ message: "You do not own this model" });
-        }
-
-        // Remove the model from the seller's inventory
-        seller.models.pull(modelId);
-        await seller.save();
-
-        // Add the model to the buyer's inventory
-        buyer.models.push(modelId);
-        await buyer.save();
-
-        res.status(200).json({ message: "Model successfully transported", model });
+        res.status(200).json(user.transaction_history);
     } catch (error) {
-        res.status(500).json({ message: "Unable to retrieve model, please try again", error: error.message });
-        console.error("Unable to retrieve model, please try again", error);
+        console.error("Error fetching transactions:", error);
+        res.status(500).json({ message: "Error fetching transactions" });
     }
 }

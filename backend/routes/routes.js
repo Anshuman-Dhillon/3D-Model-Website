@@ -1,69 +1,95 @@
-import express from "express"
-import { addCart, removeCart, editModel, userCreateModel, userGetAllModels, personalInfoChange, notificationChange, getAllCart } from "../controllers/userFunctions.js";
-import { addTransaction, removeTransaction, transportModel } from "../controllers/payments.js";
-import { getAllModels, getModelById, createModel, updateModel, deleteModel} from "../controllers/modelFunctions.js"
-import {getAllUsers, getUserById, updateUser, deleteUser} from "../controllers/userHelpers.js"
-import {createUser} from "../controllers/userSignUp.js"
-import { logInUser } from "../controllers/userLogIn.js";
+import express from "express";
+import { getAllModels, getModelById, createModel, updateModel, deleteModel, searchModels, downloadModel, previewModel } from "../controllers/modelFunctions.js";
+import { addCart, removeCart, getAllCart, userGetAllModels, personalInfoChange, notificationChange, getProfile, uploadProfilePicture } from "../controllers/userFunctions.js";
+import { checkout, getTransactions, stripeWebhook, confirmCheckout } from "../controllers/payments.js";
+import { getAllUsers, getUserById, deleteUser, discoverUsers } from "../controllers/userHelpers.js";
+import { submitSupportMessage } from "../controllers/support.js";
+import { createUser } from "../controllers/userSignUp.js";
+import { logInUser, refreshAccessToken, logOutUser } from "../controllers/userLogIn.js";
+import { googleAuth } from "../controllers/googleLogIn.js";
+import {
+  getReviews, createReview, getQuestions, createQuestion, createAnswer,
+  toggleLike, getLikedModels, toggleFollow, sendMessage, getConversations, getThread,
+} from "../controllers/community.js";
 import authenticated from "../middleware/authentication.js";
-import { googleLogInUser } from "../controllers/googleLogIn.js";
-import { googleSignUpUser } from "../controllers/googleSignUp.js";
+import upload from "../middleware/upload.js";
 
 const router = express.Router();
+// ==================== AUTH ROUTES (public) ====================
+router.post("/auth/signup", createUser);
+router.post("/auth/login", logInUser);
+router.post("/auth/google", googleAuth);
+router.post("/auth/refresh", refreshAccessToken);
+router.post("/auth/logout", logOutUser);
 
+// ==================== MODEL ROUTES (public) ====================
+router.get("/models", getAllModels);
+router.get("/models/search", searchModels);
+router.get("/models/:id/preview", previewModel);
+router.get("/models/:id", getModelById);
 
-// Model routes
-router.get("/models/getallmodels", getAllModels);
-router.get("/models/getmodelbyid/:id", getModelById);
+// ==================== USER ROUTES (public profile) ====================
+router.get("/users/discover", discoverUsers);
+router.get("/users/:id", getUserById);
 
-router.post("/models/createmodel/:name/:description/:price", createModel);
+// ==================== SUPPORT (public) ====================
+router.post("/support", submitSupportMessage);
 
-router.put("/models/updatemodel/:id", updateModel);
+// ==================== COMMUNITY (public reads) ====================
+router.get("/models/:id/reviews", getReviews);
+router.get("/models/:id/questions", getQuestions);
 
-router.delete("/models/deletemodel/:id", deleteModel);
+// ==================== AUTHENTICATED ROUTES ====================
+router.use(authenticated);
 
-// User routes for all users (Generic)
-router.get("/users/getallusers", getAllUsers);
-router.get("/users/getuserbyid/:username", getUserById);
+// -- Models (authenticated) --
+router.post("/models", upload.fields([
+    { name: "modelFile", maxCount: 1 },
+    { name: "thumbnail", maxCount: 1 },
+    { name: "images", maxCount: 10 },
+]), createModel);
 
-// Sign Up user
-router.post("/users/signup", createUser);
+router.put("/models/:id", upload.fields([
+    { name: "modelFile", maxCount: 1 },
+    { name: "thumbnail", maxCount: 1 },
+    { name: "images", maxCount: 10 },
+]), updateModel);
 
+router.delete("/models/:id", deleteModel);
+router.get("/models/:id/download", downloadModel);
 
-//Log In user
-router.post("/users/login", logInUser);
+// -- Cart --
+router.get("/cart", getAllCart);
+router.post("/cart/:modelId", addCart);
+router.delete("/cart/:modelId", removeCart);
 
-router.use(authenticated); //set up authenticated middleware for all routes
+// -- User Profile & Settings --
+router.get("/user/profile", getProfile);
+router.get("/user/models", userGetAllModels);
+router.patch("/user/settings", personalInfoChange);
+router.patch("/user/notifications", notificationChange);
+router.put("/user/profile-picture", upload.single("profilePicture"), uploadProfilePicture);
+router.delete("/user/account", deleteUser);
 
-//Update User info
-router.put("/users/update/:username/:password/:confirmpassword", updateUser);
+// ==================== ADMIN / AUTH USERS ====================
+router.get("/users", getAllUsers);
 
-//delete user
-router.delete("/users/delete/:userid", deleteUser);
+// ==================== TRANSACTIONS ====================
+router.post("/transactions/checkout", checkout);
+router.post("/transactions/confirm", confirmCheckout);
+router.get("/transactions", getTransactions);
 
-// Signed in user routes
+// ==================== COMMUNITY (authenticated) ====================
+router.post("/models/:id/reviews", createReview);
+router.post("/models/:id/questions", createQuestion);
+router.post("/questions/:id/answers", createAnswer);
+router.post("/models/:id/like", toggleLike);
+router.get("/user/likes", getLikedModels);
+router.post("/users/:id/follow", toggleFollow);
 
-// Cart related routes
-router.post("/users/add/:modelid/:username", addCart);
-router.delete("/users/remove/:modelid/:username", removeCart);
-
-router.get("/users/getallcart/:username", getAllCart);
-
-// transaction related routes
-router.get("/users/add/transaction/:username", addTransaction);
-router.delete("/users/remove/transaction/:username", removeTransaction);
-
-// Payment and Transaction routes
-router.post("/transactions/create/:username/:modelid", addTransaction);
-router.delete("/transactions/remove/:username/:transactionId", removeTransaction);
-router.post("/transactions/transport-model", transportModel);
-
-router.patch("/users/models/editmodel/:username/:id", editModel);
-router.post("/users/models/createmodel/:username", userCreateModel);
-router.get("/users/models/getallmodels/:username", userGetAllModels);
-
-//settings routes for users
-router.patch("/users/settings/settings/:username/:currentpassword", personalInfoChange);
-router.patch("/users/settings/notifications/:username", notificationChange);
+// -- Messaging --
+router.post("/messages", sendMessage);
+router.get("/messages/conversations", getConversations);
+router.get("/messages/:modelId/:userId", getThread);
 
 export default router;

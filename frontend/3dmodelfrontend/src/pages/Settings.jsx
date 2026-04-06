@@ -4,7 +4,7 @@ import SettingsGrid from '../components/SettingsGrid';
 function Settings() {
     return (
         <div>
-            <SettingsGrid/>
+            <SettingsGrid />
         </div>
     );
 }

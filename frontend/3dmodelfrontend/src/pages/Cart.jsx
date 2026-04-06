@@ -1,263 +1,155 @@
-import React, { useState } from 'react';
-
-let count = 4;
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { apiGetCart, apiRemoveFromCart, apiCheckout } from '../api';
+import '../pages design/Cart.css';
 
 function Cart() {
-    const [cartItems, setCartItems] = useState([
-        {
-            id: 1,
-            name: "Game Name 1",
-            image: "https://via.placeholder.com/150x100/4a90e2/ffffff?text=Game+1",
-            cost: 29.99
-        },
-        {
-            id: 2,
-            name: "Game Name 2",
-            image: "https://via.placeholder.com/150x100/e74c3c/ffffff?text=Game+2",
-            cost: 39.99
-        },
-        {
-            id: 3,
-            name: "Game Name 3",
-            image: "https://via.placeholder.com/150x100/2ecc71/ffffff?text=Game+3",
-            cost: 19.99
+    const [cartItems, setCartItems] = useState([]);
+    const [totalCost, setTotalCost] = useState(0);
+    const [loading, setLoading] = useState(true);
+    const [checkoutMsg, setCheckoutMsg] = useState('');
+    const [checkingOut, setCheckingOut] = useState(false);
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        fetchCart();
+    }, []);
+
+    const fetchCart = async () => {
+        setLoading(true);
+        const data = await apiGetCart();
+        setCartItems(data.items || []);
+        setTotalCost(data.total_cost || 0);
+        setLoading(false);
+    };
+
+    const deleteItem = async (modelId) => {
+        try {
+            await apiRemoveFromCart(modelId);
+        } catch {
+            // Ignore network errors — refetch will show true state
         }
-    ]);
-
-    const addTestItem = () => {
-        const newItem = {
-            id: count,
-            name: `Game Name ${cartItems.length + 1}`,
-            image: `https://via.placeholder.com/150x100/9b59b6/ffffff?text=Game+${cartItems.length + 1}`,
-            cost: Math.floor(Math.random() * 50) + 10
-        };
-        count++;
-        setCartItems([...cartItems, newItem]);
+        fetchCart();
     };
 
-    const deleteItem = (id) => {
-        setCartItems(cartItems.filter(item => item.id !== id));
-    };
-
-    const calculateTotal = () => {
-        return cartItems.reduce((total, item) => total + item.cost, 0).toFixed(2);
+    const handleCheckout = async () => {
+        setCheckoutMsg('');
+        setCheckingOut(true);
+        try {
+            const result = await apiCheckout();
+            if (result.ok && result.data.url) {
+                window.location.href = result.data.url;
+            } else {
+                setCheckoutMsg(result.data?.message || 'Checkout failed');
+            }
+        } catch {
+            setCheckoutMsg('Network error. Please try again.');
+        }
+        setCheckingOut(false);
     };
 
     return (
-        <div style={{
-            backgroundImage: 'linear-gradient(to right, rgb(34, 60, 79), rgb(35, 48, 88))',
-            minHeight: '100vh',
-            padding: '40px 20px',
-            display: 'flex',
-            justifyContent: 'center',
-            boxSizing: 'border-box',
-            overflowX: 'hidden'
-        }}>
-            <div style={{
-                width: '100%',
-                maxWidth: '1200px',
-                display: 'flex',
-                flexWrap: 'wrap',
-                gap: '30px',
-                boxSizing: 'border-box'
-            }}>
-                <div style={{ width: '100%', maxWidth: '750px', flexGrow: 1 }}>
-                    <div style={{
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        alignItems: 'center',
-                        marginBottom: '30px'
-                    }}>
-                        <div style={{
-                            color: 'white',
-                            fontSize: '24px',
-                            fontWeight: 'bold'
-                        }}>
-                            My Cart
+        <div className="cart-page">
+            <div className="cart-layout">
+                {/* Cart Items */}
+                <div className="cart-items-section">
+                    <div className="cart-header">
+                        <h1 className="cart-title">My Cart</h1>
+                        <span className="cart-count">{cartItems.length} {cartItems.length === 1 ? 'item' : 'items'}</span>
+                    </div>
+
+                    {loading ? (
+                        <p className="cart-loading">Loading cart...</p>
+                    ) : cartItems.length === 0 ? (
+                        <div className="cart-empty">
+                            <span className="cart-empty-icon">🛒</span>
+                            <p>Your cart is empty</p>
+                            <button className="cart-browse-btn" onClick={() => navigate('/catalog')}>Browse Models</button>
                         </div>
-                        <button
-                            onClick={addTestItem}
-                            style={{
-                                backgroundColor: '#358278',
-                                color: 'white',
-                                border: 'none',
-                                padding: '10px 20px',
-                                borderRadius: '5px',
-                                cursor: 'pointer'
-                            }}
-                        >
-                            Add New Item
-                        </button>
-                    </div>
-
-                    <div style={{
-                        maxHeight: '80vh',
-                        overflowY: 'auto',
-                        paddingRight: '15px'
-                    }}>
-                        {cartItems.map((item) => (
-                            <div
-                                key={item.id}
-                                style={{
-                                    backgroundImage: 'linear-gradient(to right,rgb(62, 65, 81),rgb(35, 61, 77))',
-                                    borderRadius: '12px',
-                                    border: '1px solid #3A3A4A',
-                                    padding: '20px',
-                                    marginBottom: '20px',
-                                    display: 'flex',
-                                    flexDirection: 'row',
-                                    alignItems: 'center',
-                                    minHeight: '140px'
-                                }}
-                            >
-                                <div style={{
-                                    width: '180px',
-                                    height: '120px',
-                                    backgroundColor: '#3A3A4A',
-                                    borderRadius: '8px',
-                                    backgroundImage: `url(${item.image})`,
-                                    backgroundSize: 'cover',
-                                    backgroundPosition: 'center',
-                                    flexShrink: 0,
-                                    marginRight: '30px'
-                                }} />
-
-                                <div style={{
-                                    flex: 1,
-                                    paddingRight: '20px'
-                                }}>
-                                    <div style={{
-                                        color: 'white',
-                                        fontSize: '20px',
-                                        fontWeight: '500',
-                                        marginBottom: '20px'
-                                    }}>
-                                        {item.name}
-                                    </div>
+                    ) : (
+                        <div className="cart-items-list">
+                            {cartItems.map((item) => (
+                                <div key={item._id} className="cart-item">
                                     <div
-                                        onClick={() => deleteItem(item.id)}
+                                        className="cart-item-image"
                                         style={{
-                                            cursor: 'pointer',
-                                            width: '45px',
-                                            height: '45px',
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            justifyContent: 'center',
-                                            backgroundColor: '#8a373f',
-                                            borderRadius: '8px',
-                                            transition: 'opacity 0.2s'
+                                            backgroundImage: item.thumbnailUrl ? `url(${item.thumbnailUrl})` : 'none',
                                         }}
-                                        onMouseOver={(e) => e.currentTarget.style.opacity = '0.8'}
-                                        onMouseOut={(e) => e.currentTarget.style.opacity = '1'}
+                                        onClick={() => navigate(`/modelview/${item._id}`)}
                                     >
-                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
-                                             xmlns="http://www.w3.org/2000/svg">
-                                            <path d="M3 6h18l-1.5 14H4.5L3 6z" fill="white" stroke="white"
-                                                  strokeWidth="1"/>
-                                        </svg>
+                                        {!item.thumbnailUrl && <span className="cart-item-placeholder">🎮</span>}
                                     </div>
-                                </div>
 
-                                <div style={{
-                                    width: '100px',
-                                    textAlign: 'center',
-                                    color: '#358278',
-                                    fontSize: '24px',
-                                    fontWeight: 'bold'
-                                }}>
-                                    ${item.cost.toFixed(2)}
+                                    <div className="cart-item-info">
+                                        <h3 className="cart-item-name" onClick={() => navigate(`/modelview/${item._id}`)}>
+                                            {item.name}
+                                        </h3>
+                                        <p className="cart-item-meta">
+                                            {item.format && <span className="cart-item-format">{item.format}</span>}
+                                            {item.sellerName && <span>by {item.sellerName}</span>}
+                                        </p>
+                                    </div>
+
+                                    <div className="cart-item-price">
+                                        ${(item.price ?? 0).toFixed(2)}
+                                    </div>
+
+                                    <button className="cart-item-remove" onClick={() => deleteItem(item._id)} title="Remove from cart">
+                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                                            <path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6" />
+                                        </svg>
+                                    </button>
                                 </div>
-                            </div>
-                        ))}
-                    </div>
+                            ))}
+                        </div>
+                    )}
                 </div>
 
-                <div style={{ width: '100%', maxWidth: '420px', flexGrow: 1 }}>
-                    <div style={{ position: 'sticky', top: '20px' }}>
-                        <div style={{
-                            backgroundColor: '#1b283d',
-                            borderRadius: '12px',
-                            border: '1px solid #3A3A4A',
-                            padding: '30px'
-                        }}>
-                            <div style={{
-                                color: 'white',
-                                fontSize: '22px',
-                                fontWeight: 'bold',
-                                borderBottom: '2px solid #8B7DC7',
-                                paddingBottom: '10px',
-                                marginBottom: '25px',
-                                textAlign: 'center'
-                            }}>
-                                Order Summary
+                {/* Order Summary */}
+                <div className="cart-summary-section">
+                    <div className="cart-summary">
+                        <h2 className="cart-summary-title">Order Summary</h2>
+
+                        <div className="cart-summary-rows">
+                            <div className="cart-summary-row">
+                                <span>Subtotal ({cartItems.length} items)</span>
+                                <span>${totalCost.toFixed(2)}</span>
                             </div>
-
-                            <div style={{
-                                display: 'flex',
-                                justifyContent: 'space-between',
-                                marginBottom: '15px'
-                            }}>
-                                <span style={{ color: '#B8B8B8', fontSize: '16px' }}>
-                                    Items ({cartItems.length})
-                                </span>
-                                <span style={{ color: 'white', fontSize: '16px' }}>
-                                    ${calculateTotal()}
-                                </span>
-                            </div>
-
-                            <div style={{
-                                display: 'flex',
-                                justifyContent: 'space-between',
-                                borderTop: '1px solid #3A3A4A',
-                                paddingTop: '15px',
-                                marginBottom: '30px'
-                            }}>
-                                <span style={{ color: 'white', fontSize: '18px', fontWeight: 'bold' }}>
-                                    TOTAL
-                                </span>
-                                <span style={{ color: '#358278', fontSize: '20px', fontWeight: 'bold' }}>
-                                    ${calculateTotal()}
-                                </span>
-                            </div>
-
-                            <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
-                                <button style={{
-                                    backgroundColor: '#03a63f',
-                                    border: '2px solid #03a63f',
-                                    color: 'white',
-                                    fontSize: '16px',
-                                    fontWeight: 'bold',
-                                    borderRadius: '8px',
-                                    width: '100%',
-                                    padding: '15px',
-                                    cursor: 'pointer',
-                                    transition: 'all 0.2s'
-                                }}
-                                        onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#4CAF50'}
-                                        onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#03a63f'}
-                                >
-                                    💳 PAYPAL
-                                </button>
-
-                                <button style={{
-                                    backgroundColor: '#0272c2',
-                                    border: '2px solid #0272c2',
-                                    color: 'white',
-                                    fontSize: '16px',
-                                    fontWeight: 'bold',
-                                    borderRadius: '8px',
-                                    width: '100%',
-                                    padding: '15px',
-                                    cursor: 'pointer',
-                                    transition: 'all 0.2s'
-                                }}
-                                        onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#4C63D2'}
-                                        onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#0272c2'}
-                                >
-                                    🏪 GOOGLE PAY
-                                </button>
+                            <div className="cart-summary-row">
+                                <span>Processing Fee</span>
+                                <span className="cart-free">Free</span>
                             </div>
                         </div>
+
+                        <div className="cart-summary-total">
+                            <span>Total</span>
+                            <span className="cart-total-amount">${totalCost.toFixed(2)}</span>
+                        </div>
+
+                        {checkoutMsg && (
+                            <div className={`cart-checkout-msg ${checkoutMsg.includes('successful') ? 'success' : 'error'}`}>
+                                {checkoutMsg}
+                            </div>
+                        )}
+
+                        <button
+                            className="cart-checkout-btn"
+                            disabled={cartItems.length === 0 || checkingOut}
+                            onClick={handleCheckout}
+                        >
+                            {checkingOut ? 'Redirecting to Stripe...' : 'Proceed to Checkout'}
+                        </button>
+
+                        <div className="cart-secure-note">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                <rect x="3" y="11" width="18" height="11" rx="2" ry="2" /><path d="M7 11V7a5 5 0 0110 0v4" />
+                            </svg>
+                            <span>Secure checkout powered by Stripe</span>
+                        </div>
+
+                        <button className="cart-continue-btn" onClick={() => navigate('/catalog')}>
+                            Continue Shopping
+                        </button>
                     </div>
                 </div>
             </div>

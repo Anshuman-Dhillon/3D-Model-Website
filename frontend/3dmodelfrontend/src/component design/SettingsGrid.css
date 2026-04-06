@@ -3,9 +3,8 @@
     flex-direction: column;
     align-items: center;
     gap: 16px;
-    /* vertical space between items */
-    margin: 32px auto;
+    margin: 60px auto 40px;
+    padding: 0 20px;
     width: 100%;
-    max-width: 620px;
-    /* slightly wider than items to center them nicely */
+    max-width: 640px;
 }

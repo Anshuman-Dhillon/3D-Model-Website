@@ -1,6 +1,7 @@
+/* Model Page — Dark professional theme */
 .model-page-container {
     max-width: 1200px;
-    margin: 60px auto;
+    margin: 40px auto;
     padding: 24px;
 }
 
@@ -10,10 +11,12 @@
     margin-bottom: 40px;
 }
 
-/* Left Box */
 .left-box {
     flex: 1.2;
-    background: #f9f9f9;
+    background: rgba(30, 41, 59, 0.7);
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(100, 116, 139, 0.3);
     padding: 20px;
     border-radius: 16px;
     min-height: 420px;
@@ -21,29 +24,118 @@
 
 .model-preview {
     height: 360px;
-    background-color: #e0e0e0;
+    background: rgba(15, 23, 42, 0.5);
     border-radius: 14px;
     margin-bottom: 16px;
 }
 
-.thumbnail-scroll {
+/* Image Carousel */
+.model-carousel {
     display: flex;
-    gap: 10px;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.model-carousel-main {
+    position: relative;
+    height: 360px;
+    background: rgba(15, 23, 42, 0.5);
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.carousel-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(0, 0, 0, 0.5);
+    color: #fff;
+    font-size: 1.5rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
+    z-index: 2;
+    line-height: 1;
+    padding: 0;
+}
+
+.carousel-arrow:hover {
+    background: rgba(59, 130, 246, 0.7);
+}
+
+.carousel-arrow-left {
+    left: 12px;
+}
+
+.carousel-arrow-right {
+    right: 12px;
+}
+
+.carousel-dots {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+}
+
+.carousel-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(100, 116, 139, 0.5);
+    cursor: pointer;
+    padding: 0;
+    transition: background 0.2s, transform 0.2s;
+}
+
+.carousel-dot.active {
+    background: #60a5fa;
+    transform: scale(1.3);
+}
+
+.carousel-thumbnails {
+    display: flex;
+    gap: 8px;
     overflow-x: auto;
+    padding: 4px 0;
 }
 
-.thumbnail {
-    width: 70px;
-    height: 70px;
-    background-color: #ccc;
-    border-radius: 10px;
+.carousel-thumb {
+    width: 64px;
+    height: 64px;
+    border-radius: 8px;
+    border: 2px solid transparent;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: border-color 0.2s, opacity 0.2s;
+    opacity: 0.6;
 }
 
-/* Right Box */
+.carousel-thumb:hover {
+    opacity: 0.9;
+}
+
+.carousel-thumb.active {
+    border-color: #60a5fa;
+    opacity: 1;
+}
+
 .right-box {
     flex: 1.8;
-    background: #f9f9f9;
-    padding: 24px;
+    background: rgba(30, 41, 59, 0.7);
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(100, 116, 139, 0.3);
+    padding: 28px;
     border-radius: 16px;
     display: flex;
     flex-direction: column;
@@ -51,8 +143,15 @@
 }
 
 .right-box h2 {
-    font-size: 26px;
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: #e2e8f0;
     margin-bottom: 14px;
+}
+
+.right-box p {
+    color: #94a3b8;
+    line-height: 1.6;
 }
 
 .right-box ul {
@@ -63,19 +162,59 @@
 
 .right-box ul li {
     margin-bottom: 8px;
-    font-size: 16px;
+    font-size: 0.95rem;
+    color: #cbd5e1;
 }
 
-/* Bottom Section */
+.right-box ul li strong {
+    color: #e2e8f0;
+}
+
+.right-box .form-label {
+    color: #cbd5e1;
+}
+
+.right-box .form-control,
+.right-box .form-select {
+    background: rgba(15, 23, 42, 0.6);
+    border: 1px solid rgba(100, 116, 139, 0.4);
+    color: #e2e8f0;
+    border-radius: 8px;
+}
+
+.right-box .form-control:focus,
+.right-box .form-select:focus {
+    background: rgba(15, 23, 42, 0.8);
+    border-color: #60a5fa;
+    box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.15);
+    color: #e2e8f0;
+}
+
+/* Bottom / Related Section */
 .bottom-box {
-    background: #f1f1f1;
+    background: rgba(30, 41, 59, 0.5);
+    border: 1px solid rgba(100, 116, 139, 0.2);
     padding: 28px;
     border-radius: 16px;
 }
 
 .bottom-box h4 {
-    font-size: 22px;
-    margin-bottom: 16px;
+    font-size: 1.3rem;
+    color: #e2e8f0;
+    margin-bottom: 20px;
+    font-weight: 600;
+}
+
+.related-grid {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+@media (max-width: 768px) {
+    .top-section {
+        flex-direction: column;
+    }
 }
 
 .related-grid {

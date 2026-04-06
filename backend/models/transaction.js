@@ -6,17 +6,25 @@ export const transactionSchema = new mongoose.Schema(
   {
     userId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "User", // reference to your user model
+      ref: "User",
+      required: true,
+    },
+    modelId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Model",
+    },
+    modelName: {
+      type: String,
       required: true,
     },
     platform: {
       type: String,
-      enum: ["PayPal", "GooglePay"],
+      enum: ["PayPal", "GooglePay", "Stripe"],
       required: true,
     },
     transactionId: {
       type: String,
-      default: uuidv4, // automatically generate unique UUID
+      default: uuidv4,
     },
     amount: {
       type: Number,
@@ -32,7 +40,7 @@ export const transactionSchema = new mongoose.Schema(
       default: "pending",
     },
     metadata: {
-      type: mongoose.Schema.Types.Mixed, // optional: to store platform-specific data
+      type: mongoose.Schema.Types.Mixed,
     },
   },
   { timestamps: true }
