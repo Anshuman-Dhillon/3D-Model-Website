@@ -1,4 +1,6 @@
-const API_BASE = "/api";
+export const API_BASE = import.meta.env.VITE_API_URL
+  ? `${import.meta.env.VITE_API_URL}/api`
+  : "/api";
 
 // Access token is stored in memory only (not localStorage) for XSS protection.
 // The httpOnly refresh token cookie handles session persistence across page loads.

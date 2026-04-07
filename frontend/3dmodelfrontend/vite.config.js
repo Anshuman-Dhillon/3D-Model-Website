@@ -12,4 +12,6 @@ export default defineConfig({
       },
     },
   },
+  // In production (Vercel), VITE_API_URL env var points to EC2 backend.
+  // The dev proxy above only applies to `npm run dev`.
 })

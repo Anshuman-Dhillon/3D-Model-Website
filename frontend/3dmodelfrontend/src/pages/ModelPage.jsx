@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import "../pages design/ModelPage.css";
-import { apiGetModelById, apiAddToCart, apiDownloadModel, apiSearchModels, apiGetLikedModels } from '../api';
+import { apiGetModelById, apiAddToCart, apiDownloadModel, apiSearchModels, apiGetLikedModels, API_BASE } from '../api';
 import { useAuth } from '../context/AuthContext';
 import ModelItem from '../components/ModelItem';
 import LikeButton from '../components/LikeButton';
@@ -69,8 +69,7 @@ function ModelPage() {
     };
 
     const handleViewModel = () => {
-        // The backend streams the file directly at this URL (proxied via Vite)
-        setPreviewData({ previewUrl: `/api/models/${id}/preview`, format: model.format });
+        setPreviewData({ previewUrl: `${API_BASE}/models/${id}/preview`, format: model.format });
         setViewerOpen(true);
     };
 
