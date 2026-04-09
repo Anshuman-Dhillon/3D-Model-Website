@@ -3,6 +3,7 @@ import Question from "../models/question.js";
 import Message from "../models/message.js";
 import Model from "../models/model.js";
 import User from "../models/user.js";
+import { sendMessageNotificationEmail } from "../config/email.js";
 
 // ======================== REVIEWS ========================
 
@@ -281,6 +282,18 @@ export async function sendMessage(req, res) {
     });
 
     await message.save();
+
+    // Send email notification if recipient has email_notifications enabled
+    if (recipient.settings?.payment_methods?.notification_settings?.email_notifications) {
+      sendMessageNotificationEmail({
+        recipientEmail: recipient.settings.personal_info.email_address,
+        recipientName: recipient.settings.personal_info.username,
+        senderName: sender.settings.personal_info.username,
+        messageText: message.text,
+        modelName: model?.name || null,
+      }).catch(err => console.error("Message notification email failed:", err));
+    }
+
     res.status(201).json(message);
   } catch (error) {
     console.error("Error sending message:", error);

@@ -80,8 +80,8 @@ export async function googleAuth(req, res) {
 
         res.cookie("refreshToken", refreshToken, {
             httpOnly: true,
-            secure: process.env.NODE_ENV === "production",
-            sameSite: "Strict",
+            secure: true,
+            sameSite: "None",
             maxAge: 3 * 60 * 60 * 1000,
         });
 
