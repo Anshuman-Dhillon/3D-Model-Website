@@ -34,25 +34,47 @@ function MessageSeller({ modelId, sellerId, sellerName }) {
     };
 
     return (
-        <div>
+        <div style={{ position: 'relative', display: 'inline-block' }}>
             <button
-                className="btn btn-outline-light btn-sm"
+                className="btn btn-info mt-2"
                 onClick={() => {
                     if (!user) { navigate('/login'); return; }
                     setOpen(!open);
                 }}
-                style={{ borderRadius: '8px', fontSize: '0.85rem' }}
+                style={{
+                    background: 'linear-gradient(135deg, #0ea5e9, #06b6d4)',
+                    border: 'none',
+                    color: '#fff',
+                    padding: '8px 20px',
+                    borderRadius: '8px',
+                    fontWeight: 600,
+                    fontSize: '0.9rem',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                    cursor: 'pointer',
+                    transition: 'all 0.2s',
+                }}
+                onMouseEnter={e => { e.target.style.transform = 'translateY(-1px)'; e.target.style.boxShadow = '0 4px 16px rgba(14,165,233,0.35)'; }}
+                onMouseLeave={e => { e.target.style.transform = 'none'; e.target.style.boxShadow = 'none'; }}
             >
                 💬 Message Seller
             </button>
 
             {open && (
                 <div style={{
-                    marginTop: '12px',
-                    background: 'rgba(15,23,42,0.8)',
+                    position: 'absolute',
+                    top: '100%',
+                    left: 0,
+                    marginTop: '8px',
+                    background: 'rgba(15,23,42,0.95)',
                     border: '1px solid rgba(100,116,139,0.3)',
-                    borderRadius: '10px',
+                    borderRadius: '12px',
                     padding: '16px',
+                    minWidth: '320px',
+                    zIndex: 10,
+                    backdropFilter: 'blur(12px)',
+                    boxShadow: '0 8px 32px rgba(0,0,0,0.4)',
                 }}>
                     <p style={{ color: '#94a3b8', fontSize: '0.85rem', margin: '0 0 10px' }}>
                         Message <strong style={{ color: '#60a5fa' }}>{sellerName}</strong> about this listing

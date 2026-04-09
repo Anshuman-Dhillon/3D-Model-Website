@@ -107,16 +107,43 @@ function ModelViewer({ previewUrl, format, onClose }) {
             );
         }
 
-        // Apply default material to objects without one
+        // Ensure all meshes have visible materials
+        const defaultMat = new THREE.MeshStandardMaterial({
+            color: 0x60a5fa,
+            metalness: 0.3,
+            roughness: 0.6,
+        });
+
+        function fixMaterial(mat) {
+            if (!mat) return defaultMat.clone();
+            // If the material colour is very dark (near-black) and there is no
+            // working map, the mesh will be invisible against the dark
+            // background.  Replace texture-less dark materials with a visible
+            // default colour.
+            const c = mat.color;
+            const isDark = c && (c.r + c.g + c.b) < 0.15;
+            const hasMap = mat.map && mat.map.image;
+            if (isDark && !hasMap) {
+                mat.color.set(0x60a5fa);
+            }
+            // Strip missing texture references that leave the mesh blank
+            if (mat.map && !mat.map.image) mat.map = null;
+            // Force full opacity
+            mat.transparent = false;
+            mat.opacity = 1;
+            mat.side = THREE.DoubleSide;
+            return mat;
+        }
+
         function applyDefaultMaterial(object) {
             object.traverse((child) => {
                 if (child.isMesh) {
                     if (!child.material || (Array.isArray(child.material) && child.material.length === 0)) {
-                        child.material = new THREE.MeshStandardMaterial({
-                            color: 0x60a5fa,
-                            metalness: 0.3,
-                            roughness: 0.6,
-                        });
+                        child.material = defaultMat.clone();
+                    } else if (Array.isArray(child.material)) {
+                        child.material = child.material.map(fixMaterial);
+                    } else {
+                        child.material = fixMaterial(child.material);
                     }
                     child.castShadow = true;
                     child.receiveShadow = true;
@@ -197,6 +224,13 @@ function ModelViewer({ previewUrl, format, onClose }) {
                 if (cancelled) return;
                 applyDefaultMaterial(object);
                 scene.add(object);
+
+                // Validate the loaded model has visible geometry
+                const box = new THREE.Box3().setFromObject(object);
+                if (box.isEmpty()) {
+                    console.warn('Model bounding box is empty after load');
+                }
+
                 fitCameraToObject(object);
                 setLoading(false);
             } catch (err) {

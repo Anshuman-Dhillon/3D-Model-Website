@@ -168,13 +168,10 @@ function ModelPage() {
                             Download
                         </button>
                         <LikeButton modelId={id} initialLiked={initialLiked} initialLikes={model.likes || 0} />
-                    </div>
-
-                    {model.seller && model.seller !== user?.id && (
-                        <div style={{ marginTop: '12px' }}>
+                        {user && model.seller && (
                             <MessageSeller modelId={id} sellerId={model.seller} sellerName={model.sellerName} />
-                        </div>
-                    )}
+                        )}
+                    </div>
                 </div>
             </div>
 
